@@ -419,6 +419,52 @@ html[dir="rtl"] .fact { border-left: 0; border-right: 2px solid var(--sat-a); pa
 footer { border-top: 1px solid var(--line); }
 footer a { text-decoration: none; color: var(--accent); }
 footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; padding-block: 28px 110px; color: var(--muted); }
+/* ISS pass line under the sky plot */
+.iss { margin: 12px 0 0; padding: 7px 14px; border-radius: 14px; font-size: 0.74rem; line-height: 1.5; color: var(--muted); display: flex; gap: 10px; align-items: center; max-width: min(30rem, 100%); background: color-mix(in srgb, var(--bg) 78%, transparent); border: 1px solid var(--line); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+.iss svg { width: 16px; height: 16px; flex: none; stroke: var(--sat-b); fill: none; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+.iss b { color: var(--ink); font-weight: 500; }
+.iss.now b { color: var(--sat-b); }
+
+/* constellation: stars join into مريم when the contact section comes into view */
+.reach-col { display: grid; gap: 22px; min-width: 0; }
+.constel { margin: 0; display: grid; justify-items: center; gap: 4px; }
+.constel svg { width: min(100%, 380px); height: auto; overflow: visible; }
+.constel .bg { fill: var(--muted); opacity: 0; transition: opacity 1.2s; }
+.constel .st { fill: var(--ink); opacity: 0; transition: opacity 0.5s; }
+.constel .gl { fill: var(--accent); opacity: 0; transition: opacity 0.8s; }
+.constel .ln { fill: none; stroke: var(--accent); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; stroke-opacity: 0.6; stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 0.8s ease-in-out; }
+.constel figcaption { font-size: 0.68rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); opacity: 0; transition: opacity 0.8s 3.2s; }
+.constel.on .bg { opacity: 0.35; }
+.constel.on .st { opacity: 1; }
+.constel.on .gl { opacity: 0.16; }
+.constel.on .ln { stroke-dashoffset: 0; }
+.constel.on figcaption { opacity: 1; }
+@media (prefers-reduced-motion: no-preference) { .constel.on .st { animation: twinkle 3.2s ease-in-out infinite; } }
+@keyframes twinkle { 50% { opacity: 0.55; } }
+@media (prefers-reduced-motion: reduce) { .constel * { transition: none !important; } }
+
+/* command palette */
+.cmd-hint { font: inherit; color: var(--muted); background: none; border: 0; padding: 0; cursor: pointer; }
+.cmd-hint:hover, .cmd-hint:focus-visible { color: var(--ink); }
+kbd { font-family: "JetBrains Mono", monospace; font-size: 0.85em; padding: 1px 6px; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 5px; color: var(--ink); }
+@media (hover: none) { .cmd-hint kbd, .cmd-hint .k { display: none; } }
+@media (hover: hover) { .cmd-hint .t { display: none; } }
+.cmd { width: min(560px, calc(100vw - 32px)); max-height: min(520px, calc(100vh - 120px)); margin: 12vh auto auto; padding: 0; border: 1px solid var(--line); border-radius: 16px; background: color-mix(in srgb, var(--bg) 88%, var(--ink)); color: var(--ink); box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55); overflow: hidden; }
+.cmd[open] { display: flex; flex-direction: column; }
+.cmd::backdrop { background: rgba(4, 6, 16, 0.6); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); }
+.cmd-top { display: flex; align-items: center; gap: 10px; padding: 14px 16px; border-bottom: 1px solid var(--line); }
+.cmd-top svg { width: 18px; height: 18px; flex: none; stroke: var(--accent); fill: none; stroke-width: 1.6; stroke-linecap: round; }
+.cmd input { flex: 1; min-width: 0; background: none; border: 0; outline: 0; color: var(--ink); font: 500 1rem var(--font-body, inherit); }
+.cmd input::placeholder { color: var(--muted); }
+.cmd ul { list-style: none; margin: 0; padding: 6px; overflow-y: auto; }
+.cmd li { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 10px; cursor: pointer; }
+.cmd li[aria-selected="true"] { background: color-mix(in srgb, var(--accent) 16%, transparent); }
+.cmd li i { font-style: normal; width: 22px; text-align: center; color: var(--accent); flex: none; }
+.cmd li span { flex: 1; }
+.cmd li small { font-family: "JetBrains Mono", monospace; font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+.cmd .empty { padding: 18px; color: var(--muted); text-align: center; }
+.cmd-foot { display: flex; gap: 14px; padding: 9px 16px; border-top: 1px solid var(--line); font-size: 0.68rem; color: var(--muted); }
+@media (hover: none) { .cmd-foot { display: none; } }
 </style>
 
 </head>
@@ -472,6 +518,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
           <span><b>24.4539° N</b>, <b>54.3773° E</b></span>
           <span>SATS <b id="satcount">12</b></span>
         </div>
+        <p class="iss mono" id="iss" hidden></p>
       </div>
     </div>
   </section>
@@ -817,6 +864,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
           <li>Python tools, automation and small web apps</li>
         </ul>
       </div>
+      <div class="reach-col">
       <div class="reach">
         <span class="label">Get in touch</span>
         <p class="localtime mono" id="localtime" hidden></p>
@@ -830,6 +878,11 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
           <a href="https://mariam-alzaabi.medium.com/" target="_blank" rel="noopener">Medium ↗</a>
         </div>
       </div>
+      <figure class="constel" id="constel" aria-hidden="true">
+        <svg viewBox="340 200 560 230"></svg>
+        <figcaption class="mono">Constellation · Mariam</figcaption>
+      </figure>
+      </div>
     </div>
   </section>
 </main>
@@ -838,9 +891,16 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
   <div class="wrap mono">
     <span>© 2026 <span class="myname">Mariam Alzaabi</span></span>
     <span>Signal acquired from Abu Dhabi · 24.45° N 54.38° E</span>
+    <button class="cmd-hint mono" id="cmdHint" type="button"><span class="k">Press <kbd>/</kbd> to jump anywhere</span><span class="t">Jump anywhere</span></button>
     <a href="#top">Back to orbit ↑</a>
   </div>
 </footer>
+
+<dialog class="cmd" id="cmd" aria-label="Jump to">
+  <div class="cmd-top"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5"/><path d="M13 13l4.5 4.5"/></svg><input id="cmdIn" type="text" role="combobox" aria-expanded="true" aria-controls="cmdList" aria-autocomplete="list" autocomplete="off" spellcheck="false" placeholder="Jump to a section or try something…"></div>
+  <ul id="cmdList" role="listbox" aria-label="Commands"></ul>
+  <div class="cmd-foot mono"><span><kbd>↑</kbd> <kbd>↓</kbd> move</span><span><kbd>Enter</kbd> go</span><span><kbd>Esc</kbd> close</span></div>
+</dialog>
 
 <script>
 (function () {
@@ -1282,6 +1342,179 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
     el.hidden = false;
   }
   tick(); setInterval(tick, 30000);
+})();
+
+// ISS: the next pass over Abu Dhabi, from assets/iss.json (computed twice a day by a GitHub Action)
+(function () {
+  var el = document.getElementById('iss');
+  if (!el || !window.fetch || !window.Intl) return;
+  var ar = document.documentElement.lang === 'ar', TZ = 'Asia/Dubai';
+  var DIR = ar ? ['الشمال', 'الشمال الشرقي', 'الشرق', 'الجنوب الشرقي', 'الجنوب', 'الجنوب الغربي', 'الغرب', 'الشمال الغربي']
+    : ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
+  function dir(az) { return DIR[Math.round(az / 45) % 8]; }
+  function ymd(d) { return d.toLocaleDateString('en-CA', { timeZone: TZ }); }
+  function hour(d) { return +d.toLocaleString('en-US', { timeZone: TZ, hour: 'numeric', hour12: false }) % 24; }
+  function when(d, now) {
+    var t = d.toLocaleTimeString(ar ? 'ar-AE-u-nu-latn' : 'en-US', { timeZone: TZ, hour: 'numeric', minute: '2-digit' });
+    var days = Math.round((new Date(ymd(d)) - new Date(ymd(now))) / 864e5), h = hour(d), night = h >= 18 || h < 4;
+    if (days === 0) return ar ? (night ? 'الليلة' : 'اليوم') + ' الساعة ' + t : (night ? 'tonight' : 'today') + ' at ' + t;
+    if (days === 1) return ar ? 'غدًا الساعة ' + t : 'tomorrow at ' + t;
+    var wd = d.toLocaleDateString(ar ? 'ar-AE' : 'en-US', { timeZone: TZ, weekday: 'long' });
+    return ar ? 'يوم ' + wd + ' الساعة ' + t : 'on ' + wd + ' at ' + t;
+  }
+  var ICON = '<svg viewBox="0 0 16 16" aria-hidden="true"><rect x="6.5" y="6.5" width="3" height="3"/><path d="M8 3.5v3M8 9.5v3M1.5 5.5h4v5h-4zM10.5 5.5h4v5h-4z"/></svg>';
+  var list = [];
+  function show() {
+    var now = new Date(), next = null, vis = null;
+    list.forEach(function (p) {
+      if (new Date(p.end) < now) return;
+      if (!next) next = p;
+      if (!vis && p.visible) vis = p;
+    });
+    if (!next) { el.hidden = true; return; }
+    var b = document.createElement('b'), txt, live = new Date(next.start) <= now;
+    el.classList.toggle('now', live);
+    if (live) {
+      b.textContent = ar ? 'محطة الفضاء الدولية فوق أبوظبي الآن!' : 'The ISS is above Abu Dhabi right now!';
+      txt = ar ? ' تتجه نحو ' + dir(next.endAz) + (next.visible ? '، انظر إلى السماء.' : '، لكنها لا تُرى في ضوء النهار.')
+        : ' Heading ' + dir(next.endAz) + (next.visible ? ', look up.' : ', though it is hidden by daylight.');
+    } else if (vis && new Date(vis.start) - now < 7 * 864e5) {
+      b.textContent = when(new Date(vis.start), now);
+      txt = ar ? 'تمرّ محطة الفضاء الدولية فوق أبوظبي ' : 'The ISS passes over Abu Dhabi ';
+      var tail = ar ? '، ترتفع ' + vis.maxEl + '° من ' + dir(vis.startAz) + ' إلى ' + dir(vis.endAz) + '. انظر إلى السماء!'
+        : ', rising ' + vis.maxEl + '° from ' + dir(vis.startAz) + ' to ' + dir(vis.endAz) + '. Look up!';
+      el.innerHTML = ICON;
+      var sp = document.createElement('span');
+      sp.appendChild(document.createTextNode(txt)); sp.appendChild(b); sp.appendChild(document.createTextNode(tail));
+      el.appendChild(sp); el.hidden = false; return;
+    } else {
+      b.textContent = when(new Date(next.start), now);
+      txt = ar ? '، في ضوء النهار فلن تُرى.' : ', in daylight, so not one to look for.';
+      el.innerHTML = ICON;
+      var sp2 = document.createElement('span');
+      sp2.appendChild(document.createTextNode(ar ? 'تمرّ محطة الفضاء الدولية فوق أبوظبي ' : 'The ISS next crosses Abu Dhabi ')); sp2.appendChild(b); sp2.appendChild(document.createTextNode(txt));
+      el.appendChild(sp2); el.hidden = false; return;
+    }
+    el.innerHTML = ICON;
+    var sp3 = document.createElement('span'); sp3.appendChild(b); sp3.appendChild(document.createTextNode(txt));
+    el.appendChild(sp3); el.hidden = false;
+  }
+  fetch('/assets/iss.json', { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+    if (!d || !d.passes) return;
+    list = d.passes; show(); setInterval(show, 30000);
+  }).catch(function () {});
+})();
+
+// Constellation: stars join into مريم (Reem Kufi shapes) when the contact section scrolls into view
+(function () {
+  var fig = document.getElementById('constel');
+  if (!fig) return;
+  var svg = fig.querySelector('svg'), NS = 'http://www.w3.org/2000/svg';
+  var P = { a: [866, 300], b: [820, 250], c: [774, 300], d: [820, 348], r1: [714, 348], r2: [700, 404], r3: [645, 400],
+    y1: [628, 296], y2: [628, 348], m1: [545, 348], m2: [540, 286], m3: [490, 236], m4: [442, 290], m5: [452, 348], t: [372, 348],
+    o1: [568, 396], o2: [614, 396] };
+  var LINES = [['a', 'b', 'c', 'd', 'a'], ['d', 'r1', 'r2', 'r3'], ['y1', 'y2', 'm1'], ['m1', 'm2', 'm3', 'm4', 'm5', 'm1'], ['m5', 't']];
+  var BIG = { a: 1, m3: 1, r3: 1, t: 1 };
+  function el(n, a) { var e = document.createElementNS(NS, n); for (var k in a) e.setAttribute(k, a[k]); svg.appendChild(e); return e; }
+  // faint background stars, seeded so they sit in the same place on every visit
+  var seed = 7;
+  function rnd() { seed = (seed * 16807) % 2147483647; return seed / 2147483647; }
+  for (var i = 0; i < 34; i++) el('circle', { 'class': 'bg', cx: (350 + rnd() * 540).toFixed(1), cy: (205 + rnd() * 220).toFixed(1), r: (0.8 + rnd() * 1.6).toFixed(1) });
+  LINES.forEach(function (L, i) {
+    var pl = el('polyline', { 'class': 'ln', pathLength: 1, points: L.map(function (k) { return P[k].join(','); }).join(' ') });
+    pl.style.transitionDelay = (0.9 + i * 0.5) + 's';
+  });
+  Object.keys(P).forEach(function (k, i) {
+    var r = BIG[k] ? 5.5 : 4, x = P[k][0], y = P[k][1];
+    var g = el('circle', { 'class': 'gl', cx: x, cy: y, r: r * 3 });
+    var s = el('circle', { 'class': 'st', cx: x, cy: y, r: r });
+    g.style.transitionDelay = s.style.transitionDelay = (i * 0.05) + 's';
+    s.style.animationDelay = (i * 0.37 % 3) + 's';
+  });
+  if (!('IntersectionObserver' in window)) { fig.classList.add('on'); return; }
+  var io = new IntersectionObserver(function (es) {
+    if (es[0].isIntersecting) { fig.classList.add('on'); io.disconnect(); }
+  }, { threshold: 0.6 });
+  io.observe(fig);
+})();
+
+// Command palette: press / (or Ctrl/Cmd + K) to jump to a section or run something
+(function () {
+  var dlg = document.getElementById('cmd');
+  if (!dlg || typeof dlg.showModal !== 'function') { var h = document.getElementById('cmdHint'); if (h) h.hidden = true; return; }
+  var ar = document.documentElement.lang === 'ar', input = document.getElementById('cmdIn'), ul = document.getElementById('cmdList');
+  function $(id) { return document.getElementById(id); }
+  function go(id, after) { return function () { var t = $(id); if (!t || t.hidden) return; t.scrollIntoView({ behavior: 'smooth', block: 'start' }); if (after) setTimeout(after, 600); }; }
+  function open(u) { return function () { window.open(u, '_blank', 'noopener'); }; }
+  var lang = document.querySelector('a.lang');
+  // [icon, English, Arabic, kind, action, extra search words]
+  var C = [
+    ['◎', 'About', 'نبذة', 0, go('about'), 'me bio نفسي'],
+    ['◐', 'Thesis: underwater dehazing', 'الأطروحة: إزالة الضباب تحت الماء', 0, go('thesis'), 'research gan masters ماجستير'],
+    ['▧', 'Dehaze your own photo', 'أزل الضباب عن صورتك', 1, go('thesis'), 'upload image صورة'],
+    ['✛', 'Play Get a Fix', 'العب «حدّد موقعك»', 1, go('play', function () { var c = $('fixc'); if (c) c.focus({ preventScroll: true }); }), 'game mini لعبة'],
+    ['▤', 'Projects', 'المشاريع', 0, go('projects'), 'work portfolio أعمال'],
+    ['↗', 'Flight log', 'سجل الرحلة', 0, go('journey'), 'journey experience career خبرة المسيرة'],
+    ['▲', 'Training and programs', 'التدريب والبرامج', 0, go('training'), 'courses certificates دورات'],
+    ['★', 'Hackathons and awards', 'الهاكاثونات والجوائز', 0, go('awards'), 'prizes جوائز'],
+    ['⚙', 'Toolkit', 'الأدوات', 0, go('toolkit'), 'skills stack مهارات'],
+    ['✎', 'Writing', 'كتاباتي', 0, go('writing'), 'medium blog posts مقالات', 'writing'],
+    ['♪', 'Off the clock', 'خارج العمل', 0, go('offclock'), 'music film quote mission log موسيقى'],
+    ['✉', 'Contact', 'تواصل', 0, go('contact'), 'email hire freelance بريد'],
+    ['⌁', 'Jam the signal', 'شوّش الإشارة', 1, function () { $('jamBtn').click(); }, 'signal mode gnss تشويش'],
+    ['♫', 'Turn sound on or off', 'تشغيل الصوت أو إيقافه', 1, function () { $('sndBtn').click(); }, 'audio ambient music صوت'],
+    ['⧉', 'Copy my email', 'انسخ بريدي', 1, function () { $('copy').click(); }, 'email mail بريد'],
+    ['in', 'Open LinkedIn', 'افتح LinkedIn', 2, open('https://www.linkedin.com/in/mariam-mk-alzaabi/'), 'linkedin'],
+    ['<>', 'Open GitHub', 'افتح GitHub', 2, open('https://github.com/MariamAlz'), 'github code'],
+    ['M', 'Open Medium', 'افتح Medium', 2, open('https://mariam-alzaabi.medium.com/'), 'medium blog'],
+    ['ع', 'اقرأ الموقع بالعربية', 'Read in English', 1, function () { if (lang) location.href = lang.href; }, 'arabic english language لغة عربي'],
+    ['↑', 'Back to orbit', 'العودة إلى المدار', 1, function () { scrollTo({ top: 0, behavior: 'smooth' }); }, 'top home البداية']
+  ];
+  var KIND = ar ? ['قسم', 'إجراء', 'رابط'] : ['Section', 'Action', 'Link'];
+  if (ar) { input.placeholder = 'انتقل إلى قسم أو جرّب شيئًا…'; dlg.setAttribute('aria-label', 'انتقل إلى'); }
+  var shown = [], sel = 0;
+  function render() {
+    var q = input.value.trim().toLowerCase();
+    shown = C.filter(function (c) {
+      if (c[6] && $(c[6]).hidden) return false;
+      if (!q) return true;
+      var hay = (c[1] + ' ' + c[2] + ' ' + c[5]).toLowerCase();
+      return q.split(/\s+/).every(function (w) { return hay.indexOf(w) >= 0; });
+    });
+    sel = Math.min(sel, Math.max(0, shown.length - 1));
+    ul.innerHTML = '';
+    if (!shown.length) { var e = document.createElement('li'); e.className = 'empty'; e.textContent = ar ? 'لا نتائج. جرّب «لعبة» أو «بريد».' : 'No match. Try "game" or "email".'; ul.appendChild(e); input.removeAttribute('aria-activedescendant'); return; }
+    shown.forEach(function (c, i) {
+      var li = document.createElement('li'), ic = document.createElement('i'), sp = document.createElement('span'), sm = document.createElement('small');
+      li.id = 'cmd-' + i; li.setAttribute('role', 'option'); li.setAttribute('aria-selected', i === sel ? 'true' : 'false');
+      ic.setAttribute('aria-hidden', 'true'); ic.textContent = c[0]; sp.textContent = ar ? c[2] : c[1]; sm.textContent = KIND[c[3]];
+      li.appendChild(ic); li.appendChild(sp); li.appendChild(sm);
+      li.addEventListener('click', function () { run(i); });
+      li.addEventListener('mousemove', function () { if (sel !== i) { sel = i; mark(); } });
+      ul.appendChild(li);
+    });
+    input.setAttribute('aria-activedescendant', 'cmd-' + sel);
+  }
+  function mark() {
+    [].forEach.call(ul.children, function (li, i) { li.setAttribute('aria-selected', i === sel ? 'true' : 'false'); });
+    var cur = ul.children[sel]; if (cur && cur.scrollIntoView) cur.scrollIntoView({ block: 'nearest' });
+    input.setAttribute('aria-activedescendant', 'cmd-' + sel);
+  }
+  function run(i) { var c = shown[i]; if (!c) return; dlg.close(); c[4](); }
+  function show() { if (dlg.open) return; input.value = ''; sel = 0; render(); dlg.showModal(); input.focus(); }
+  input.addEventListener('input', function () { sel = 0; render(); });
+  input.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowDown') { e.preventDefault(); sel = (sel + 1) % Math.max(1, shown.length); mark(); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); sel = (sel - 1 + shown.length) % Math.max(1, shown.length); mark(); }
+    else if (e.key === 'Enter') { e.preventDefault(); run(sel); }
+  });
+  dlg.addEventListener('click', function (e) { if (e.target === dlg) dlg.close(); });
+  $('cmdHint').addEventListener('click', show);
+  document.addEventListener('keydown', function (e) {
+    var t = e.target, typing = t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName));
+    if ((e.key === 'k' || e.key === 'K') && (e.metaKey || e.ctrlKey)) { e.preventDefault(); dlg.open ? dlg.close() : show(); }
+    else if (e.key === '/' && !typing && !e.metaKey && !e.ctrlKey && !e.altKey) { e.preventDefault(); show(); }
+  });
 })();
 
 // Writing: latest Medium posts, saved daily to assets/medium.json by a GitHub Action

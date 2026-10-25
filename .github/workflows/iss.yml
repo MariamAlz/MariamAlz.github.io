@@ -1,0 +1,28 @@
+name: ISS passes
+
+on:
+  schedule:
+    - cron: "47 2,14 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency: iss-passes
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: pip install sgp4==2.24
+      - run: python3 .github/scripts/iss_passes.py
+      - name: Commit if changed
+        run: |
+          git diff --quiet assets/iss.json 2>/dev/null && git ls-files --error-unmatch assets/iss.json >/dev/null 2>&1 && exit 0
+          git config user.name "iss-passes bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/iss.json
+          git commit -m "Update ISS passes"
+          git pull --rebase origin main
+          git push
