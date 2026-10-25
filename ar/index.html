@@ -168,7 +168,7 @@ h1, h2, .lede, .about .text, .focus p, .sec-head p { text-shadow: 0 1px 18px rgb
 .jam-btn:hover, .jam-btn:focus-visible { color: var(--ink); border-color: var(--sat-c); }
 .jam-btn:disabled { cursor: default; color: var(--sat-c); border-color: var(--sat-c); }
 .jam-btn svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; }
-@media (max-width: 640px) { .jam-btn { padding: 7px 10px; font-size: 0.64rem; } .snd-btn span { display: none; } }
+@media (max-width: 640px) { .jam-btn { padding: 7px 10px; font-size: 0.64rem; } .snd-btn span, .cmd-btn span { display: none; } .dock { flex-wrap: wrap; justify-content: flex-end; max-width: 150px; } }
 @media (prefers-reduced-motion: no-preference) {
   body.jam::after { content: ""; position: fixed; inset: 0; z-index: 5; pointer-events: none; background: repeating-linear-gradient(0deg, rgba(240, 138, 179, 0.06) 0 1px, transparent 1px 3px); animation: jamScan 0.12s steps(2) infinite; }
   body.jam h1, body.jam h2, body.jam .mark b { animation: jamGlitch 0.22s steps(2) infinite; }
@@ -446,11 +446,9 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
 @media (prefers-reduced-motion: reduce) { .constel * { transition: none !important; } }
 
 /* command palette */
-.cmd-hint { font: inherit; color: var(--muted); background: none; border: 0; padding: 0; cursor: pointer; }
-.cmd-hint:hover, .cmd-hint:focus-visible { color: var(--ink); }
+.cmd-btn kbd { font-size: 0.9em; padding: 0 5px; margin-inline-start: 2px; }
 kbd { font-family: "JetBrains Mono", monospace; font-size: 0.85em; padding: 1px 6px; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 5px; color: var(--ink); }
-@media (hover: none) { .cmd-hint kbd, .cmd-hint .k { display: none; } }
-@media (hover: hover) { .cmd-hint .t { display: none; } }
+@media (hover: none) { .cmd-btn kbd { display: none; } }
 .cmd { width: min(560px, calc(100vw - 32px)); max-height: min(520px, calc(100vh - 120px)); margin: 12vh auto auto; padding: 0; border: 1px solid var(--line); border-radius: 16px; background: color-mix(in srgb, var(--bg) 88%, var(--ink)); color: var(--ink); box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55); overflow: hidden; }
 .cmd[open] { display: flex; flex-direction: column; }
 .cmd::backdrop { background: rgba(4, 6, 16, 0.6); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); }
@@ -468,7 +466,7 @@ kbd { font-family: "JetBrains Mono", monospace; font-size: 0.85em; padding: 1px 
 .cmd-foot { display: flex; gap: 14px; padding: 9px 16px; border-top: 1px solid var(--line); font-size: 0.68rem; color: var(--muted); }
 @media (hover: none) { .cmd-foot { display: none; } }
 
-html[lang="ar"] .iss, html[lang="ar"] .cmd-hint, html[lang="ar"] .cmd-foot, html[lang="ar"] .cmd li small { font-family: "IBM Plex Sans Arabic", sans-serif; letter-spacing: 0; text-transform: none; }
+html[lang="ar"] .iss, html[lang="ar"] .cmd-foot, html[lang="ar"] .cmd li small { font-family: "IBM Plex Sans Arabic", sans-serif; letter-spacing: 0; text-transform: none; }
 html[lang="ar"] .iss { font-size: 0.8rem; }
 html[lang="ar"] .constel figcaption { font-family: "Reem Kufi", sans-serif; font-size: 0.9rem; letter-spacing: 0.05em; }
 html[lang="ar"] .constel svg { direction: ltr; }
@@ -534,6 +532,7 @@ html[dir="rtl"] .readout, html[dir="rtl"] .email { direction: ltr; }
   <span>SUB <b id="sub">0.00° N 0.00° E</b></span>
 </div>
 <div class="dock">
+<button class="jam-btn cmd-btn" id="cmdBtn" type="button" aria-label="Jump to a section" aria-keyshortcuts="/"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6"/><path d="M10.6 5.4l-1.6 3.6-3.6 1.6 1.6-3.6z"/></svg><span id="cmdTxt">انتقال</span><kbd>/</kbd></button>
 <button class="jam-btn snd-btn" id="sndBtn" type="button" aria-pressed="false" aria-label="Ambient sound"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 6h2.5l3.5-3v10l-3.5-3H2.5z"/><path class="on" d="M11 5.5a3.5 3.5 0 0 1 0 5M12.8 3.8a6 6 0 0 1 0 8.4"/><path class="off" d="M11 6l4 4M15 6l-4 4"/></svg><span id="sndTxt">Sound</span></button>
 <button class="jam-btn" id="jamBtn" type="button"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 9v5M5.5 6.5a3.5 3.5 0 0 1 5 0M3.5 4.5a6.3 6.3 0 0 1 9 0"/><circle cx="8" cy="8.5" r="1"/></svg><span id="jamTxt">Jam the signal</span></button>
 </div>
@@ -933,7 +932,6 @@ html[dir="rtl"] .readout, html[dir="rtl"] .email { direction: ltr; }
   <div class="wrap mono">
     <span>© 2026 <span class="myname">مريم الزعابي</span></span>
     <span>التُقطت الإشارة من أبوظبي · 24.45° شمالًا 54.38° شرقًا</span>
-    <button class="cmd-hint mono" id="cmdHint" type="button"><span class="k">اضغط <kbd>/</kbd> للانتقال إلى أي مكان</span><span class="t">انتقل إلى أي مكان</span></button>
     <a href="#top">العودة إلى المدار ↑</a>
   </div>
 </footer>
@@ -1483,7 +1481,7 @@ html[dir="rtl"] .readout, html[dir="rtl"] .email { direction: ltr; }
 // Command palette: press / (or Ctrl/Cmd + K) to jump to a section or run something
 (function () {
   var dlg = document.getElementById('cmd');
-  if (!dlg || typeof dlg.showModal !== 'function') { var h = document.getElementById('cmdHint'); if (h) h.hidden = true; return; }
+  if (!dlg || typeof dlg.showModal !== 'function') { document.getElementById('cmdBtn').hidden = true; return; }
   var ar = document.documentElement.lang === 'ar', input = document.getElementById('cmdIn'), ul = document.getElementById('cmdList');
   function $(id) { return document.getElementById(id); }
   function go(id, after) { return function () { var t = $(id); if (!t || t.hidden) return; t.scrollIntoView({ behavior: 'smooth', block: 'start' }); if (after) setTimeout(after, 600); }; }
@@ -1514,6 +1512,7 @@ html[dir="rtl"] .readout, html[dir="rtl"] .email { direction: ltr; }
     ['↑', 'Back to orbit', 'العودة إلى المدار', 1, function () { scrollTo({ top: 0, behavior: 'smooth' }); }, 'top home البداية']
   ];
   var KIND = ar ? ['قسم', 'إجراء', 'رابط'] : ['Section', 'Action', 'Link'];
+  if (ar) { $('cmdBtn').setAttribute('aria-label', 'انتقل إلى قسم'); }
   if (ar) { input.placeholder = 'انتقل إلى قسم أو جرّب شيئًا…'; dlg.setAttribute('aria-label', 'انتقل إلى'); }
   var shown = [], sel = 0;
   function render() {
@@ -1552,7 +1551,7 @@ html[dir="rtl"] .readout, html[dir="rtl"] .email { direction: ltr; }
     else if (e.key === 'Enter') { e.preventDefault(); run(sel); }
   });
   dlg.addEventListener('click', function (e) { if (e.target === dlg) dlg.close(); });
-  $('cmdHint').addEventListener('click', show);
+  $('cmdBtn').addEventListener('click', show);
   document.addEventListener('keydown', function (e) {
     var t = e.target, typing = t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName));
     if ((e.key === 'k' || e.key === 'K') && (e.metaKey || e.ctrlKey)) { e.preventDefault(); dlg.open ? dlg.close() : show(); }
