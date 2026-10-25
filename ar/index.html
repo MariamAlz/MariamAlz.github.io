@@ -272,6 +272,28 @@ section.block { padding-block: 72px; border-top: 1px solid var(--line); }
 .badge { font-family: var(--font-mono); font-size: 0.7rem; text-transform: uppercase; letter-spacing: .1em; text-align: center; padding: 4px 6px; border-radius: 6px; border: 1px solid var(--line); color: var(--muted); }
 .badge.win { background: var(--accent); color: #1a1205; border-color: var(--accent); font-weight: 500; }
 
+/* game: get a fix */
+.game { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 32px; align-items: start; }
+@media (max-width: 860px) { .game { grid-template-columns: 1fr; } }
+.board { position: relative; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); background: rgba(7, 10, 24, 0.82); aspect-ratio: 4 / 3; max-width: 100%; touch-action: none; }
+.board canvas { width: 100%; height: 100%; display: block; }
+.board canvas:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.board .overlay { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 14px; padding: 20px; text-align: center; background: rgba(7, 10, 24, 0.72); }
+.board .overlay[hidden] { display: none !important; }
+.board .overlay h3 { font-size: var(--step-2); font-weight: 800; }
+.board .overlay p { color: var(--muted); max-width: 40ch; }
+.panel { display: grid; gap: 16px; min-width: 0; }
+.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.stats div { display: grid; gap: 2px; padding: 12px 14px; border-radius: 12px; background: var(--surface); border: 1px solid var(--line); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+.stats b { font-family: var(--font-display); font-size: 1.5rem; font-variant-numeric: tabular-nums; }
+.howto { display: grid; gap: 8px; color: var(--muted); font-size: 0.95rem; padding: 0; margin: 0; list-style: none; }
+.howto li { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 8px; }
+.howto li span { color: var(--accent); font-family: var(--font-mono); }
+.result { min-height: 3.2em; font-weight: 500; }
+.result b { color: var(--accent); }
+.fact { font-size: 0.9rem; color: var(--muted); border-left: 2px solid var(--sat-a); padding-left: 12px; }
+html[dir="rtl"] .fact { border-left: 0; border-right: 2px solid var(--sat-a); padding-left: 0; padding-right: 12px; }
+
 /* toolkit */
 .tools { display: flex; flex-wrap: wrap; gap: 10px; }
 .tools span {
@@ -316,6 +338,9 @@ html[lang="ar"] .hero h1 { letter-spacing: 0; line-height: 1.25; font-size: clam
 html[lang="ar"] .label, html[lang="ar"] .mono, html[lang="ar"] .badge, html[lang="ar"] .prn, html[lang="ar"] .band { letter-spacing: 0; text-transform: none; }
 html[lang="ar"] .label, html[lang="ar"] .badge, html[lang="ar"] .card .prn, html[lang="ar"] .band, html[lang="ar"] .log .when, html[lang="ar"] .spacetag, html[lang="ar"] footer .mono { font-family: "IBM Plex Sans Arabic", var(--font-mono); font-size: 0.8rem; }
 html[lang="ar"] .mark span { font-family: var(--font-display); font-size: 0.95rem; color: var(--accent); }
+/* Mariam's name keeps the same Arabic face as on the English page */
+html[lang="ar"] .mark b, html[lang="ar"] .myname { font-family: var(--font-ar); font-weight: 700; }
+html[lang="ar"] .mark b { font-size: 1.3rem; }
 html[lang="ar"] .nav nav a.lang { font-family: var(--font-body); }
 html[lang="ar"] .lede { max-width: 38ch; }
 html[dir="rtl"] .log::before { left: auto; right: 132px; }
@@ -345,6 +370,7 @@ html[dir="rtl"] .readout, html[dir="rtl"] .email { direction: ltr; }
     <nav aria-label="الأقسام">
       <a href="#about">نبذة</a>
       <a href="#thesis">الأطروحة</a>
+      <a href="#play">العب</a>
       <a href="#projects">المشاريع</a>
       <a href="#journey">المسيرة</a>
       <a class="keep" href="#contact">تواصل</a>
@@ -468,6 +494,41 @@ html[dir="rtl"] .readout, html[dir="rtl"] .email { direction: ltr; }
           <h3>الخوارزميات والتحسين</h3>
           <p>الخوارزميات الجينية، وتحسين السرب، ومخططات التجزئة، وترتيب الرسوم البيانية. أستمتع بجعل البحث الصعب سريعًا.</p>
         </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="play">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="label">لعبة مصغّرة</span>
+        <h2>حدّد موقعك.</h2>
+        <p>الأقمار الصناعية لا تراك، كل ما تعرفه هو بُعدك عنها. حدّد موقع المستقبِل كما يفعل نظام GPS.</p>
+      </div>
+      <div class="game">
+        <div class="board">
+          <canvas id="fixc" width="800" height="600" tabindex="0" aria-label="لوحة اللعبة. اضغط حيث تلتقي دوائر المسافة. باستخدام لوحة المفاتيح حرّك المؤشر بالأسهم واضغط Enter للتثبيت."></canvas>
+          <div class="overlay" id="fixov">
+            <h3 id="fixovt">جاهز للإطلاق؟</h3>
+            <p id="fixovp">خمس جولات، وتزداد الإشارات تشويشًا في كل مرة.</p>
+            <button class="btn primary" id="fixstart" type="button">ابدأ</button>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="stats">
+            <div><span class="label">الجولة</span><b id="fixround">0/5</b></div>
+            <div><span class="label">النقاط</span><b id="fixscore">0</b></div>
+            <div><span class="label">الأفضل</span><b id="fixbest">0</b></div>
+          </div>
+          <ol class="howto">
+            <li><span>01</span>يقيس كل قمر صناعي بُعده عن مستقبِل مخفي.</li>
+            <li><span>02</span>هذا البُعد يرسم دائرة حول القمر.</li>
+            <li><span>03</span>اضغط حيث تلتقي الدوائر. كلما اقتربت زادت نقاطك.</li>
+          </ol>
+          <p class="result" id="fixres" aria-live="polite"></p>
+          <button class="btn ghost" id="fixnext" type="button" hidden>الجولة التالية</button>
+          <p class="fact">هذا هو التثليث المسافي. المستقبِلات الحقيقية تحلّه بأربعة أقمار أو أكثر، لأنها تحتاج أيضًا إلى حساب خطأ ساعتها.</p>
+        </div>
       </div>
     </div>
   </section>
@@ -674,7 +735,7 @@ html[dir="rtl"] .readout, html[dir="rtl"] .email { direction: ltr; }
 
 <footer>
   <div class="wrap mono">
-    <span>© 2026 مريم الزعابي</span>
+    <span>© 2026 <span class="myname">مريم الزعابي</span></span>
     <span>التُقطت الإشارة من أبوظبي · 24.45° شمالًا 54.38° شرقًا</span>
     <a href="#top">العودة إلى المدار ↑</a>
   </div>
@@ -815,6 +876,117 @@ html[dir="rtl"] .readout, html[dir="rtl"] .email { direction: ltr; }
     sl.addEventListener('input', paint); paint();
   })();
 
+  // Mini game: Get a Fix (2D trilateration)
+  (function () {
+    var AR = document.documentElement.lang === 'ar';
+    var T = AR ? {
+      round: 'الجولة', score: 'النقاط', best: 'الأفضل', go: 'ابدأ', next: 'الجولة التالية', again: 'العب مجددًا',
+      off: function (m, p) { return 'ابتعدتَ <b>' + m + ' م</b> عن الموقع الحقيقي. +' + p + ' نقطة.'; },
+      done: 'اكتملت المهمة', final: function (sc) { return 'مجموع نقاطك ' + sc + ' من 5000.'; },
+      record: 'رقم قياسي جديد! 🚀', tap: 'اضغط حيث تلتقي الدوائر.', you: 'أنت', truth: 'الحقيقي'
+    } : {
+      round: 'Round', score: 'Score', best: 'Best', go: 'Start', next: 'Next round', again: 'Play again',
+      off: function (m, p) { return 'You were <b>' + m + ' m</b> off. +' + p + ' points.'; },
+      done: 'Mission complete', final: function (sc) { return 'You scored ' + sc + ' out of 5000.'; },
+      record: 'New best score! 🚀', tap: 'Tap where the circles meet.', you: 'YOU', truth: 'TRUE'
+    };
+    var cv = document.getElementById('fixc'), g = cv.getContext('2d');
+    var ov = document.getElementById('fixov'), ovt = document.getElementById('fixovt'), ovp = document.getElementById('fixovp');
+    var startB = document.getElementById('fixstart'), nextB = document.getElementById('fixnext'), res = document.getElementById('fixres');
+    var elRound = document.getElementById('fixround'), elScore = document.getElementById('fixscore'), elBest = document.getElementById('fixbest');
+    var W = 800, H = 600, M_PER_PX = 25; // board is 20 km wide
+    var best = 0; try { best = +localStorage.getItem('fixBest') || 0; } catch (e) {}
+    elBest.textContent = best;
+    var round = 0, score = 0, state = 'idle', truth = null, guess = null, sats = [], cross = { x: W / 2, y: H / 2 }, t0 = 0, anim = 0;
+    var cols = [css('--sat-a'), css('--sat-b'), css('--sat-c'), css('--accent')];
+    function rnd(a, b) { return a + Math.random() * (b - a); }
+    function newRound() {
+      round++; state = 'aim'; guess = null; res.innerHTML = T.tap; nextB.hidden = true;
+      truth = { x: rnd(160, W - 160), y: rnd(130, H - 130) };
+      var n = round >= 4 ? 4 : 3, noise = [0, 0.015, 0.03, 0.045, 0.06][round - 1];
+      var base = rnd(0, 6.28); sats = [];
+      for (var i = 0; i < n; i++) {
+        var a = base + i * 6.2832 / n + rnd(-0.35, 0.35);
+        var sx = W / 2 + Math.cos(a) * W * 0.47, sy = H / 2 + Math.sin(a) * H * 0.47;
+        var d = Math.hypot(sx - truth.x, sy - truth.y);
+        sats.push({ x: sx, y: sy, r: d * (1 + rnd(-noise, noise)), id: ['G07', 'E11', 'C19', 'G21'][i] });
+      }
+      elRound.textContent = round + '/5'; t0 = performance.now();
+      loop();
+    }
+    function lock(x, y) {
+      if (state !== 'aim') return;
+      guess = { x: x, y: y }; state = 'reveal';
+      var m = Math.round(Math.hypot(x - truth.x, y - truth.y) * M_PER_PX);
+      var pts = Math.round(1000 * Math.exp(-m / 1500));
+      score += pts; elScore.textContent = score;
+      res.innerHTML = T.off(m.toLocaleString('en-US'), pts);
+      if (round < 5) { nextB.textContent = T.next; nextB.hidden = false; }
+      else setTimeout(finish, 900);
+      loop();
+    }
+    function finish() {
+      state = 'done';
+      var rec = score > best; if (rec) { best = score; elBest.textContent = best; try { localStorage.setItem('fixBest', best); } catch (e) {} }
+      ovt.textContent = T.done; ovp.innerHTML = T.final(score) + (rec ? '<br>' + T.record : '');
+      startB.textContent = T.again; ov.hidden = false;
+    }
+    function start() { round = 0; score = 0; elScore.textContent = 0; ov.hidden = true; newRound(); cv.focus({ preventScroll: true }); }
+    startB.addEventListener('click', start);
+    nextB.addEventListener('click', function () { newRound(); cv.focus({ preventScroll: true }); });
+    function toBoard(e) { var r = cv.getBoundingClientRect(); return { x: (e.clientX - r.left) * W / r.width, y: (e.clientY - r.top) * H / r.height }; }
+    cv.addEventListener('pointermove', function (e) { var p = toBoard(e); cross = p; if (state === 'aim') draw(performance.now()); });
+    cv.addEventListener('pointerup', function (e) { var p = toBoard(e); cross = p; lock(p.x, p.y); });
+    cv.addEventListener('keydown', function (e) {
+      if (state !== 'aim') return;
+      var k = e.key, st = e.shiftKey ? 30 : 8;
+      if (k === 'ArrowLeft') cross.x -= st; else if (k === 'ArrowRight') cross.x += st;
+      else if (k === 'ArrowUp') cross.y -= st; else if (k === 'ArrowDown') cross.y += st;
+      else if (k === 'Enter' || k === ' ') { lock(cross.x, cross.y); } else return;
+      e.preventDefault(); cross.x = Math.max(0, Math.min(W, cross.x)); cross.y = Math.max(0, Math.min(H, cross.y)); draw(performance.now());
+    });
+    function loop() { cancelAnimationFrame(anim); var f = function (t) { draw(t); if (state === 'aim' || state === 'reveal') anim = requestAnimationFrame(f); }; anim = requestAnimationFrame(f); }
+    function draw(t) {
+      g.clearRect(0, 0, W, H);
+      // map grid with lat/lon style ticks
+      g.strokeStyle = 'rgba(132,160,255,0.10)'; g.lineWidth = 1;
+      for (var x = 0; x <= W; x += 50) { g.beginPath(); g.moveTo(x, 0); g.lineTo(x, H); g.stroke(); }
+      for (var y = 0; y <= H; y += 50) { g.beginPath(); g.moveTo(0, y); g.lineTo(W, y); g.stroke(); }
+      g.fillStyle = 'rgba(167,173,203,0.7)'; g.font = '500 13px "JetBrains Mono", monospace';
+      g.fillText('0 — 5 km', 18, H - 18); g.fillStyle = 'rgba(167,173,203,0.7)'; g.fillRect(18, H - 34, 200, 2);
+      if (state === 'idle' || !truth) return;
+      var el = Math.max(0, (t - t0) / 1000);
+      sats.forEach(function (s, i) {
+        var c = cols[i];
+        // expanding signal ripple, then the solid range circle
+        var grow = Math.min(1, el / 1.2);
+        g.strokeStyle = c; g.globalAlpha = 0.9; g.lineWidth = 2.5; g.setLineDash([]);
+        g.beginPath(); g.arc(s.x, s.y, s.r * grow, 0, 6.2832); g.stroke();
+        if (!reduce) { var rp = (el * 0.5 + i * 0.25) % 1; g.globalAlpha = 0.35 * (1 - rp); g.lineWidth = 1.5; g.beginPath(); g.arc(s.x, s.y, s.r * rp, 0, 6.2832); g.stroke(); }
+        g.globalAlpha = 1;
+        g.fillStyle = c; g.fillRect(s.x - 15, s.y - 4, 10, 8); g.fillRect(s.x + 5, s.y - 4, 10, 8);
+        g.fillStyle = css('--accent'); g.fillRect(s.x - 5, s.y - 5, 10, 10);
+        g.fillStyle = '#EEF0FA'; g.font = '600 14px "JetBrains Mono", monospace'; g.fillText(s.id, s.x + 18, s.y - 10);
+      });
+      if (state === 'aim') {
+        g.strokeStyle = '#EEF0FA'; g.lineWidth = 1.5; g.globalAlpha = 0.9;
+        g.beginPath(); g.arc(cross.x, cross.y, 14, 0, 6.2832); g.moveTo(cross.x - 24, cross.y); g.lineTo(cross.x - 6, cross.y); g.moveTo(cross.x + 6, cross.y); g.lineTo(cross.x + 24, cross.y); g.moveTo(cross.x, cross.y - 24); g.lineTo(cross.x, cross.y - 6); g.moveTo(cross.x, cross.y + 6); g.lineTo(cross.x, cross.y + 24); g.stroke(); g.globalAlpha = 1;
+      }
+      if (guess) {
+        g.setLineDash([6, 6]); g.strokeStyle = '#EEF0FA'; g.lineWidth = 1.5;
+        g.beginPath(); g.moveTo(guess.x, guess.y); g.lineTo(truth.x, truth.y); g.stroke(); g.setLineDash([]);
+        var pulse = reduce ? 0.5 : (t * 0.0012) % 1;
+        g.strokeStyle = css('--sat-b'); g.globalAlpha = 1 - pulse; g.beginPath(); g.arc(truth.x, truth.y, 8 + pulse * 30, 0, 6.2832); g.stroke(); g.globalAlpha = 1;
+        g.fillStyle = css('--sat-b'); g.beginPath(); g.arc(truth.x, truth.y, 7, 0, 6.2832); g.fill();
+        g.fillStyle = css('--accent'); g.beginPath(); g.arc(guess.x, guess.y, 7, 0, 6.2832); g.fill();
+        g.font = '600 14px "JetBrains Mono", monospace';
+        g.fillStyle = css('--sat-b'); g.fillText(T.truth, truth.x + 12, truth.y + 22);
+        g.fillStyle = css('--accent'); g.fillText(T.you, guess.x + 12, guess.y - 12);
+      }
+    }
+    draw(0);
+  })();
+
   // Rocket exhaust trail behind the cursor
   (function () {
     if (reduce || !matchMedia('(pointer: fine)').matches) return;
@@ -834,7 +1006,7 @@ html[dir="rtl"] .readout, html[dir="rtl"] .email { direction: ltr; }
       parts.forEach(function (p) {
         p.x += p.vx; p.y += p.vy; p.life -= 0.035;
         tx.globalAlpha = Math.max(0, p.life) * 0.85; tx.fillStyle = p.c;
-        tx.beginPath(); tx.arc(p.x, p.y, p.r * (0.4 + p.life * 0.6), 0, 6.28); tx.fill();
+        tx.beginPath(); tx.arc(p.x, p.y, Math.max(0.1, p.r * (0.4 + p.life * 0.6)), 0, 6.28); tx.fill();
       });
       tx.globalAlpha = 1;
       if (parts.length) requestAnimationFrame(step); else running = false;
