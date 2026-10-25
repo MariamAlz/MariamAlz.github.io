@@ -1,10 +1,1026 @@
-<!DOCTYPE html>
-<html>
-   <head>
-      <meta charset=utf-8">
-      <title>Mariam Alzaabi</title>
-   </head>
-   <body>
-      <h1>This is a test.</h1>
-   </body>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mariam Alzaabi</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Mariam Alzaabi, Emirati software engineer in Abu Dhabi working on algorithms, signal processing, AI and GNSS.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Reem+Kufi:wght@500;700&display=swap">
+<style>
+/* Layout: a sky plot "position fix" hero, then calm single-column sections on a 1120px grid; gold for Mariam, blue/teal for satellites */
+:root {
+  /* single deliberate look: the page is a descent from orbit, so it lives in night sky */
+  --bg: #070A18;
+  --surface: rgba(18, 23, 52, 0.72);
+  --ink: #EEF0FA;
+  --muted: #A7ADCB;
+  --line: rgba(120, 132, 190, 0.22);
+  --accent: #E9B467;
+  --accent-soft: rgba(233, 180, 103, 0.12);
+  --sat-a: #84A0FF;
+  --sat-b: #4FD3BD;
+  --sat-c: #F08AB3;
+  --font-display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Instrument Sans", "Helvetica Neue", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --font-ar: "Reem Kufi", "Geeza Pro", "Noto Kufi Arabic", sans-serif;
+  --step--1: 0.84rem;
+  --step-0: 1rem;
+  --step-1: 1.2rem;
+  --step-2: 1.6rem;
+  --step-3: clamp(1.9rem, 4vw, 2.6rem);
+  --step-4: clamp(2.8rem, 8vw, 5.4rem);
+  --radius: 14px;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--step-0);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+.wrap {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding-left: max(20px, env(safe-area-inset-left, 0px));
+  padding-right: max(20px, env(safe-area-inset-right, 0px));
+}
+h1, h2, h3 { font-family: var(--font-display); line-height: 1.08; margin: 0; text-wrap: balance; letter-spacing: -0.01em; }
+p { margin: 0; }
+.mono { font-family: var(--font-mono); font-size: var(--step--1); letter-spacing: 0.02em; }
+.label {
+  font-family: var(--font-mono); font-size: 0.75rem; text-transform: uppercase;
+  letter-spacing: 0.14em; color: var(--muted);
+}
+
+/* nav */
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+header.nav {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
+  background: color-mix(in srgb, var(--bg) 86%, transparent);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+.nav .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 14px; }
+.mark { display: flex; align-items: baseline; gap: 10px; text-decoration: none; }
+.mark b { font-family: var(--font-display); font-weight: 800; font-size: 1.15rem; }
+.mark span { font-family: var(--font-ar); color: var(--accent); font-size: 1.05rem; }
+.nav nav { display: flex; gap: 22px; flex-wrap: wrap; }
+.nav nav a { text-decoration: none; color: var(--muted); font-weight: 500; font-size: 0.95rem; }
+.nav nav a:hover { color: var(--ink); }
+@media (max-width: 640px) { .nav nav a:not(.keep) { display: none; } }
+
+/* hero */
+.hero .wrap {
+  display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: 48px; align-items: center; padding-block: 64px 56px;
+}
+@media (max-width: 860px) { .hero .wrap { grid-template-columns: 1fr; gap: 28px; padding-block: 40px; } }
+.hero-copy { display: grid; gap: 22px; min-width: 0; }
+.ar-name { justify-self: start; font-family: var(--font-ar); font-weight: 700; font-size: var(--step-2); color: var(--accent); line-height: 1.3; }
+.hero h1 { font-size: var(--step-4); font-weight: 800; letter-spacing: -0.035em; }
+.hero h1 em { font-style: normal; color: var(--accent); }
+.lede { font-size: var(--step-1); color: var(--muted); max-width: 34ch; line-height: 1.5; }
+.lede strong { color: var(--ink); font-weight: 600; }
+.status {
+  display: inline-flex; align-items: center; gap: 10px; width: fit-content;
+  padding: 7px 14px 7px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface);
+  font-size: 0.9rem; font-weight: 500;
+}
+.status i { width: 9px; height: 9px; border-radius: 50%; background: var(--sat-b); box-shadow: 0 0 0 4px color-mix(in srgb, var(--sat-b) 22%, transparent); }
+.ctas { display: flex; gap: 12px; flex-wrap: wrap; }
+.btn {
+  display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; border-radius: 999px;
+  font-weight: 600; text-decoration: none; border: 1px solid var(--ink); transition: transform .15s ease, background .15s ease;
+  font-family: var(--font-body); font-size: 0.98rem; cursor: pointer;
+}
+.btn.primary { background: var(--ink); color: var(--bg); }
+.btn.ghost { background: transparent; color: var(--ink); }
+.btn:hover { transform: translateY(-2px); }
+
+/* space: starfield + ground track */
+#earth, #fx { position: fixed; inset: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; display: block; }
+.card, .offclock div, .tools span, .chip, .status { backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+h1, h2, .lede, .about .text, .focus p, .sec-head p { text-shadow: 0 1px 18px rgba(7, 10, 24, 0.85); }
+.hud {
+  position: fixed; z-index: 4; left: max(16px, env(safe-area-inset-left, 0px)); bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+  display: grid; gap: 2px; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--line);
+  background: rgba(7, 10, 24, 0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  color: var(--muted); font-size: 0.72rem; line-height: 1.5; pointer-events: none; font-variant-numeric: tabular-nums;
+}
+.hud b { color: var(--ink); font-weight: 500; }
+.hud .ph { color: var(--accent); }
+@media (max-width: 640px) { .hud { font-size: 0.64rem; padding: 6px 9px; } .hud #sub, .hud span:last-child { display: none; } }
+main, footer { position: relative; }
+.track { display: block; width: 100%; height: 90px; color: var(--line); overflow: visible; }
+.track-wrap { position: relative; }
+.track-label { position: absolute; right: 0; top: 4px; color: var(--muted); }
+.track .path { fill: none; stroke: currentColor; stroke-width: 1.4; stroke-dasharray: 4 6; }
+.track .sat { fill: var(--accent); }
+.track .sat-panel { fill: var(--sat-a); }
+.track .city { fill: var(--accent); }
+.track text { fill: var(--muted); font: 500 10px var(--font-mono); letter-spacing: .08em; }
+
+/* sky plot */
+.sky { position: relative; width: 100%; max-width: 460px; aspect-ratio: 1; justify-self: center; }
+.sky canvas { width: 100%; height: 100%; display: block; }
+.sky .me {
+  position: absolute; left: 50%; top: 50%; width: 30%; aspect-ratio: 1; max-width: 100%;
+  transform: translate(-50%, -50%); border-radius: 50%; overflow: hidden;
+  border: 3px solid var(--accent); box-shadow: 0 0 0 8px color-mix(in srgb, var(--accent) 16%, transparent);
+  background: var(--surface);
+}
+.sky .me img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.readout {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 16px; margin-top: 10px;
+  color: var(--muted); text-align: center;
+}
+.readout b { color: var(--ink); font-weight: 500; }
+.sky-col { display: grid; justify-items: center; min-width: 0; }
+
+/* sections */
+section.block { padding-block: 72px; border-top: 1px solid var(--line); }
+.sec-head { display: grid; gap: 10px; margin-bottom: 36px; max-width: 60ch; }
+.sec-head h2 { font-size: var(--step-3); font-weight: 800; }
+.sec-head p { color: var(--muted); }
+
+/* about */
+.about { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 48px; }
+@media (max-width: 860px) { .about { grid-template-columns: 1fr; gap: 32px; } }
+.about .text { display: grid; gap: 16px; font-size: 1.08rem; max-width: 62ch; }
+.facts { display: grid; gap: 0; margin: 0; border-top: 1px solid var(--line); }
+.facts div { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 16px; padding-block: 14px; border-bottom: 1px solid var(--line); }
+.facts dt { margin: 0; }
+.facts dd { margin: 0; font-weight: 500; }
+
+/* focus */
+.focus { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+@media (max-width: 860px) { .focus { grid-template-columns: 1fr; } }
+.focus article { display: grid; gap: 12px; align-content: start; padding-top: 18px; border-top: 3px solid var(--c); }
+.focus h3 { font-size: var(--step-1); font-weight: 600; }
+.focus p { color: var(--muted); }
+.focus .band { color: var(--c); }
+
+/* projects */
+.filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+.chip {
+  font: 500 0.9rem var(--font-body); padding: 7px 14px; border-radius: 999px; cursor: pointer;
+  border: 1px solid var(--line); background: var(--surface); color: var(--muted);
+}
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 18px; }
+.card {
+  display: grid; grid-template-rows: auto auto 1fr auto; gap: 12px; padding: 22px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+  text-decoration: none; transition: transform .18s ease, border-color .18s ease; min-width: 0;
+}
+.card:hover { transform: translateY(-3px); border-color: var(--accent); }
+.card .top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.card .prn { font-family: var(--font-mono); font-size: 0.78rem; color: var(--c); font-weight: 500; letter-spacing: .06em; }
+.card .arrow { color: var(--muted); transition: transform .18s ease, color .18s ease; }
+.card:hover .arrow { transform: translate(3px, -3px); color: var(--accent); }
+.card h3 { font-size: 1.25rem; font-weight: 600; }
+.card p { color: var(--muted); font-size: 0.97rem; }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.tags span { font-family: var(--font-mono); font-size: 0.72rem; padding: 3px 8px; border-radius: 6px; background: var(--bg); color: var(--muted); }
+.card.featured { grid-column: span 2; background: var(--accent-soft); }
+@media (max-width: 700px) { .card.featured { grid-column: auto; } }
+.card[hidden] { display: none !important; }
+
+/* thesis */
+.thesis { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 40px; align-items: start; }
+@media (max-width: 860px) { .thesis { grid-template-columns: 1fr; } }
+#thesis .sec-head { max-width: 30ch; }
+#thesis .sec-head h2 { font-size: clamp(1.7rem, 3.4vw, 2.3rem); }
+.thesis-text { display: grid; gap: 18px; font-size: 1.05rem; max-width: 62ch; min-width: 0; }
+.haze { position: relative; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); aspect-ratio: 640 / 300; max-width: 100%; }
+.haze canvas { width: 100%; height: 100%; display: block; }
+.haze input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: ew-resize; margin: 0; }
+.haze input:focus-visible + .hz-l { outline: 2px solid var(--accent); }
+.hz-l, .hz-r { position: absolute; top: 10px; font-size: 0.68rem; letter-spacing: .12em; padding: 3px 8px; border-radius: 6px; background: rgba(7, 10, 24, .6); color: var(--ink); pointer-events: none; }
+.hz-l { left: 10px; } .hz-r { right: 10px; }
+.note { color: var(--muted); font-size: 0.72rem; }
+.pubs { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+.pubs li { display: grid; gap: 6px; padding: 18px 20px; border-radius: var(--radius); background: var(--surface); border: 1px solid var(--line); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+.pubs b { font-family: var(--font-display); font-weight: 600; font-size: 1.08rem; line-height: 1.3; }
+.pubs .venue { color: var(--muted); font-size: 0.92rem; }
+
+/* flight log */
+.log { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; position: relative; }
+.log::before { content: ""; position: absolute; left: 132px; top: 8px; bottom: 8px; width: 1px; background: linear-gradient(var(--accent), var(--line)); }
+.log li { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 40px; padding-block: 18px; position: relative; }
+.log li::after { content: ""; position: absolute; left: 127px; top: 26px; width: 11px; height: 11px; border-radius: 50%; background: var(--bg); border: 2px solid var(--accent); }
+.log li:first-child::after { background: var(--accent); box-shadow: 0 0 0 6px var(--accent-soft); }
+.log .when { color: var(--accent); padding-top: 4px; text-align: right; }
+.log h3 { font-size: 1.2rem; font-weight: 600; }
+.log .org { color: var(--sat-a); font-size: 0.92rem; font-weight: 500; }
+.log p { color: var(--muted); margin-top: 6px; max-width: 62ch; }
+@media (max-width: 640px) {
+  .log::before { left: 5px; } .log li::after { left: 0; top: 24px; }
+  .log li { grid-template-columns: 1fr; gap: 4px; padding-left: 28px; } .log .when { text-align: left; }
+}
+
+/* training */
+.train { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 860px) { .train { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .train { grid-template-columns: 1fr; } }
+.train article { display: grid; gap: 8px; align-content: start; padding: 20px; border-radius: var(--radius); background: var(--surface); border: 1px solid var(--line); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); transition: transform .2s ease, border-color .2s ease; }
+.train article:hover { transform: translateY(-3px); border-color: var(--sat-b); }
+.train .space-card { position: relative; overflow: hidden; border-color: color-mix(in srgb, var(--accent) 55%, transparent); background: linear-gradient(135deg, rgba(233, 180, 103, 0.14), rgba(132, 160, 255, 0.10) 60%, var(--surface)); }
+.train .space-card.wide { grid-column: span 2; padding-right: 130px; }
+@media (max-width: 520px) { .train .space-card.wide { grid-column: auto; padding-right: 20px; } }
+.train .space-card h3 { font-size: 1.35rem; }
+.orbit-ico { position: absolute; right: 18px; top: 18px; width: 96px; height: 96px; fill: none; stroke: var(--accent); stroke-width: 1.4; }
+.orbit-ico rect { fill: var(--sat-a); stroke: none; transform-origin: 32px 32px; animation: orbitspin 9s linear infinite; }
+@keyframes orbitspin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .orbit-ico rect { animation: none; } }
+@media (max-width: 520px) { .orbit-ico { width: 64px; height: 64px; opacity: .6; } }
+.spacetag { font-size: 0.68rem; padding: 2px 8px; border-radius: 999px; background: var(--accent); color: #1a1205; vertical-align: middle; letter-spacing: .06em; font-weight: 500; }
+.log li.space::after { background: var(--sat-a); border-color: var(--sat-a); box-shadow: 0 0 0 6px rgba(132, 160, 255, 0.18); }
+.train h3 { font-size: 1.12rem; font-weight: 600; }
+.train p { color: var(--muted); font-size: 0.94rem; }
+
+/* awards */
+.awards { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 40px; }
+@media (max-width: 760px) { .awards { grid-template-columns: 1fr; } }
+.awards li { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 16px; padding-block: 16px; border-bottom: 1px solid var(--line); align-items: start; }
+.awards b { display: block; font-weight: 600; }
+.awards span:not(.badge) { color: var(--muted); font-size: 0.93rem; }
+.badge { font-family: var(--font-mono); font-size: 0.7rem; text-transform: uppercase; letter-spacing: .1em; text-align: center; padding: 4px 6px; border-radius: 6px; border: 1px solid var(--line); color: var(--muted); }
+.badge.win { background: var(--accent); color: #1a1205; border-color: var(--accent); font-weight: 500; }
+
+/* toolkit */
+.tools { display: flex; flex-wrap: wrap; gap: 10px; }
+.tools span {
+  font-family: var(--font-display); font-weight: 600; font-size: 1.1rem; padding: 8px 16px;
+  border-radius: 10px; border: 1px dashed var(--line); background: var(--surface);
+}
+
+/* off the clock */
+.offclock { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; }
+@media (max-width: 960px) { .offclock { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 460px) { .offclock { grid-template-columns: 1fr; } }
+.offclock div { display: grid; gap: 8px; padding: 18px; border-radius: var(--radius); background: var(--surface); border: 1px solid var(--line); }
+.offclock svg { width: 30px; height: 30px; stroke: var(--accent); fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.offclock h3 { font-size: 1.05rem; font-weight: 600; }
+.offclock p { color: var(--muted); font-size: 0.92rem; }
+
+/* contact */
+.contact { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 48px; align-items: start; }
+@media (max-width: 860px) { .contact { grid-template-columns: 1fr; gap: 32px; } }
+.contact h2 { font-size: var(--step-3); font-weight: 800; }
+.services { list-style: none; padding: 0; margin: 20px 0 0; display: grid; gap: 10px; }
+.services li { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 10px; }
+.services li::before { content: "◎"; color: var(--accent); }
+.reach { display: grid; gap: 12px; padding: 24px; border-radius: var(--radius); background: var(--ink); color: var(--bg); }
+.reach .label { color: color-mix(in srgb, var(--bg) 70%, var(--ink)); }
+.email-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.email { font-family: var(--font-mono); font-size: 1rem; word-break: break-all; user-select: all; }
+.copy { font: 600 0.85rem var(--font-body); padding: 6px 12px; border-radius: 999px; border: 1px solid currentColor; background: transparent; color: inherit; cursor: pointer; }
+.links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
+.links a { display: inline-flex; gap: 8px; align-items: center; padding: 9px 16px; border-radius: 999px; background: color-mix(in srgb, var(--bg) 12%, var(--ink)); text-decoration: none; font-weight: 500; }
+.links a:hover { background: var(--accent); color: var(--ink); }
+
+footer { border-top: 1px solid var(--line); }
+footer a { text-decoration: none; color: var(--accent); }
+footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; padding-block: 28px 110px; color: var(--muted); }
+</style>
+
+</head>
+<body>
+<header class="nav">
+  <div class="wrap">
+    <a class="mark" href="#top"><b>Mariam Alzaabi</b><span>مريم</span></a>
+    <nav aria-label="Sections">
+      <a href="#about">About</a>
+      <a href="#thesis">Thesis</a>
+      <a href="#projects">Projects</a>
+      <a href="#journey">Journey</a>
+      <a class="keep" href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<canvas id="earth" aria-hidden="true"></canvas>
+<canvas id="fx" aria-hidden="true"></canvas>
+<div class="hud mono" id="hud" aria-hidden="true">
+  <span>ALT <b id="alt">20,200 km</b></span>
+  <span class="ph" id="phase">MEO · GNSS orbit</span>
+  <span>SUB <b id="sub">0.00° N 0.00° E</b></span>
+</div>
+<main id="top">
+  <section class="hero">
+    <div class="wrap">
+      <div class="hero-copy">
+        <div class="ar-name" lang="ar" dir="rtl">مريم الزعابي</div>
+        <h1>Engineering things that know <em>where</em> they are.</h1>
+        <p class="lede">I'm Mariam, an <strong>Emirati software engineer</strong> in Abu Dhabi. I build algorithms in signal processing, AI and <strong>GNSS</strong>, and I like turning hard problems into clean, working code.</p>
+        <span class="status"><i></i>Open to freelance projects</span>
+        <div class="ctas">
+          <a class="btn primary" href="#projects">See my work</a>
+          <a class="btn ghost" href="#contact">Work with me</a>
+        </div>
+      </div>
+      <div class="sky-col">
+        <div class="sky" aria-label="An animated GNSS sky plot with Mariam's photo at the centre, showing satellites passing overhead" role="img">
+          <canvas id="sky"></canvas>
+          <div class="me"><img src="assets/mariam.jpg" alt="Portrait of Mariam Alzaabi"></div>
+        </div>
+        <div class="readout mono" aria-live="off">
+          <span>FIX <b>3D</b></span>
+          <span><b>24.4539° N</b>, <b>54.3773° E</b></span>
+          <span>SATS <b id="satcount">12</b></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap track-wrap" aria-hidden="true">
+    <span class="track-label mono">GROUND TRACK · ORBIT 1</span>
+    <svg class="track" viewBox="0 0 1000 90" preserveAspectRatio="none">
+      <path id="gt" class="path" d="M0 70 C 125 70, 125 20, 250 20 S 375 70, 500 70 S 625 20, 750 20 S 875 70, 1000 70"/>
+      <circle class="city" cx="560" cy="64" r="4"/>
+      <text x="572" y="86">ABU DHABI</text>
+      <g id="gtsat"><rect class="sat-panel" x="-13" y="-3" width="8" height="6"/><rect class="sat-panel" x="5" y="-3" width="8" height="6"/><rect class="sat" x="-4" y="-4" width="8" height="8" rx="1.5"/>
+        <animateMotion dur="18s" repeatCount="indefinite"><mpath href="#gt"/></animateMotion></g>
+    </svg>
+  </div>
+
+  <section class="block" id="about">
+    <div class="wrap about">
+      <div>
+        <div class="sec-head">
+          <span class="label">About</span>
+          <h2>Curious by default, precise by training.</h2>
+        </div>
+        <div class="text">
+          <p>I studied computer engineering at Khalifa University, then went deeper into artificial intelligence for my master's, where I researched brain-inspired spiking GANs that help underwater robots see through murky water. Along the way I found the problems I enjoy most sit where math meets real-world signals: noisy data, tight constraints, and answers that have to be right.</p>
+          <p>Today I work as a software engineer in the GNSS and defense sector, and I'm steadily growing into space technology. Satellites, orbits and the signals they send down are what pull me forward, and in 2024 I trained in remote sensing and geospatial analytics with the UAE Space Agency. Before that I helped turn Jais, the Arabic large language model, into a product at MBZUAI. Outside work I keep building side projects, learning new tools, and improving things that could work better.</p>
+        </div>
+      </div>
+      <dl class="facts">
+        <div><dt class="label">Based</dt><dd>Abu Dhabi, UAE</dd></div>
+        <div><dt class="label">Now</dt><dd>Software engineer, GNSS and defense</dd></div>
+        <div><dt class="label">MSc</dt><dd>Computer Science (AI), Khalifa University</dd></div>
+        <div><dt class="label">BSc</dt><dd>Computer Engineering, Khalifa University</dd></div>
+        <div><dt class="label">Languages</dt><dd>Arabic (native), English (C1)</dd></div>
+        <div><dt class="label">Space</dt><dd>UAE Space Agency, Space Applications training (2024)</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="block" id="thesis">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="label">Master's thesis · Khalifa University · 2022 to 2024</span>
+        <h2>Neuromorphic GAN-assisted computing architecture for image dehazing in underwater navigation</h2>
+      </div>
+      <div class="thesis">
+        <div class="thesis-text">
+          <p>Underwater, light scatters and fades fast, so cameras see a blue-green haze. That makes navigation hard for underwater robots. I trained GAN-based dehazing models on underwater datasets and built them with spiking neural networks, the brain-inspired models that run efficiently on neuromorphic hardware. The goal is clearer images in real time, using little power.</p>
+          <div class="haze" aria-label="Drag across the image to compare a hazy underwater scene with a dehazed one" role="img">
+            <canvas id="haze" width="640" height="300"></canvas>
+            <input type="range" id="hazeSlider" min="0" max="100" value="55" aria-label="Compare hazy and dehazed">
+            <span class="hz-l mono">HAZY</span><span class="hz-r mono">DEHAZED</span>
+          </div>
+          <p class="mono note">Illustration only, drawn in the browser. Not output from the thesis model.</p>
+        </div>
+        <ol class="pubs">
+          <li><span class="label">ICRA 2023 Workshop · May 2023</span><b>Efficient Hybrid Spiking GAN for Underwater Image Dehazing</b><span class="venue">Embodied Neuromorphic AI for Robotic Perception</span></li>
+          <li><span class="label">UAE GSRC 2023 · Mar 2023</span><b>GAN-Based Underwater Image Dehazing</b><span class="venue">UAE Graduate Students Research Conference</span></li>
+          <li><span class="label">WANLP 2022 · Oct 2022</span><b>Gulf Arabic Diacritization: Guidelines, Initial Dataset, and Results</b><span class="venue">Seventh Arabic Natural Language Processing Workshop</span></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="work">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="label">What I work on</span>
+        <h2>Three frequencies I'm always tuned to.</h2>
+      </div>
+      <div class="focus">
+        <article style="--c: var(--sat-a)">
+          <span class="band mono">L1 · SIGNALS</span>
+          <h3>Signal processing and GNSS</h3>
+          <p>Algorithms that turn raw, noisy measurements into reliable positions and insight. My current day-to-day, in Python, MATLAB and C/C++.</p>
+        </article>
+        <article style="--c: var(--sat-b)">
+          <span class="band mono">L2 · MODELS</span>
+          <h3>Applied AI</h3>
+          <p>Spiking and generative models for computer vision, Arabic NLP from diacritization to text generation, and forecasting for smart homes. Models that do something useful.</p>
+        </article>
+        <article style="--c: var(--sat-c)">
+          <span class="band mono">L5 · SEARCH</span>
+          <h3>Algorithms and optimization</h3>
+          <p>Genetic algorithms, swarm optimization, hashing schemes and graph ranking. I enjoy making the hard search fast.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="projects">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="label">Selected projects</span>
+        <h2>Things I've built and taken apart.</h2>
+        <p>Each one is on GitHub. Filter by the kind of problem.</p>
+      </div>
+      <div class="filters" role="group" aria-label="Filter projects">
+        <button class="chip" id="f-all" data-f="all" aria-pressed="true">All</button>
+        <button class="chip" id="f-ai" data-f="ai" aria-pressed="false">AI</button>
+        <button class="chip" id="f-algo" data-f="algo" aria-pressed="false">Algorithms</button>
+        <button class="chip" id="f-build" data-f="build" aria-pressed="false">Apps and hardware</button>
+      </div>
+      <div class="grid" id="grid">
+        <a class="card featured" data-k="algo ai" style="--c: var(--sat-c)" href="https://github.com/MariamAlz/MSA" target="_blank" rel="noopener">
+          <div class="top"><span class="prn">PRN 01 · BIOINFORMATICS</span><span class="arrow">↗</span></div>
+          <h3>Multiple Sequence Alignment with metaheuristics</h3>
+          <p>Aligning biological sequences with a genetic algorithm and Tuna Swarm Optimization, benchmarked on BAliBase and scored with sum-of-pairs, entropy and gap-penalty metrics.</p>
+          <div class="tags"><span>Julia</span><span>Python</span><span>Genetic algorithm</span><span>Swarm optimization</span></div>
+        </a>
+        <a class="card" data-k="ai" style="--c: var(--sat-b)" href="https://github.com/MariamAlz/arabic-text-generation" target="_blank" rel="noopener">
+          <div class="top"><span class="prn">PRN 02 · ARABIC NLP</span><span class="arrow">↗</span></div>
+          <h3>Arabic text generation</h3>
+          <p>Generating Arabic text with AraGPT2 transformer models, with Farasa and PyArabic preprocessing.</p>
+          <div class="tags"><span>Transformers</span><span>AraGPT2</span><span>Python</span></div>
+        </a>
+        <a class="card" data-k="ai build" style="--c: var(--sat-b)" href="https://github.com/MariamAlz/SaveSmart-AI" target="_blank" rel="noopener">
+          <div class="top"><span class="prn">PRN 03 · ENERGY</span><span class="arrow">↗</span></div>
+          <h3>SaveSmart</h3>
+          <p>My senior design project for the KU smart home at Solar Decathlon Middle East, which placed 2nd in energy efficiency. It forecasts solar output and power use, and recommends when to run appliances, through a Xamarin app.</p>
+          <div class="tags"><span>Keras LSTM</span><span>IoT</span><span>C# Xamarin</span></div>
+        </a>
+        <a class="card" data-k="algo" style="--c: var(--sat-c)" href="https://github.com/MariamAlz/UCSP" target="_blank" rel="noopener">
+          <div class="top"><span class="prn">PRN 04 · SCHEDULING</span><span class="arrow">↗</span></div>
+          <h3>University course scheduling</h3>
+          <p>A hybrid genetic and ant colony approach that schedules classes, rooms and instructors without clashes, backed by SQLite.</p>
+          <div class="tags"><span>Python</span><span>Genetic algorithm</span><span>Ant colony</span></div>
+        </a>
+        <a class="card" data-k="build" style="--c: var(--sat-a)" href="https://github.com/MariamAlz/PyCoLab" target="_blank" rel="noopener">
+          <div class="top"><span class="prn">PRN 05 · WEB</span><span class="arrow">↗</span></div>
+          <h3>PyCoLab</h3>
+          <p>A Flask web app for Python learners, with an in-browser IDE, project notes and a reporting dashboard.</p>
+          <div class="tags"><span>Flask</span><span>SQLAlchemy</span><span>JavaScript</span></div>
+        </a>
+        <a class="card" data-k="build" style="--c: var(--sat-a)" href="https://github.com/MariamAlz/Arduino-SpeedMath-Game" target="_blank" rel="noopener">
+          <div class="top"><span class="prn">PRN 06 · HARDWARE</span><span class="arrow">↗</span></div>
+          <h3>Arduino SpeedMath</h3>
+          <p>A mental-math reaction game with an LCD, keypad, IR sensor, RGB LED and speaker. Featured on Arduino Project Hub.</p>
+          <div class="tags"><span>Arduino</span><span>C</span><span>Electronics</span></div>
+        </a>
+        <a class="card" data-k="algo" style="--c: var(--sat-c)" href="https://github.com/MariamAlz/cuckoo-hashing" target="_blank" rel="noopener">
+          <div class="top"><span class="prn">PRN 07 · DATA STRUCTURES</span><span class="arrow">↗</span></div>
+          <h3>Cuckoo vs chaining hashing</h3>
+          <p>Both collision strategies implemented and compared head to head, plus a perfect-hashing companion project.</p>
+          <div class="tags"><span>Python</span><span>Hashing</span><span>Benchmarks</span></div>
+        </a>
+        <a class="card" data-k="ai build" style="--c: var(--sat-b)" href="https://github.com/MariamAlz/lesson-planner" target="_blank" rel="noopener">
+          <div class="top"><span class="prn">PRN 08 · EDTECH</span><span class="arrow">↗</span></div>
+          <h3>Lesson planner</h3>
+          <p>Built for the Digicode-Ed Challenge at Coders HQ: a ChatGPT-powered tool that helps teachers create lesson plans tailored to their students.</p>
+          <div class="tags"><span>Python</span><span>Flask</span><span>OpenAI API</span></div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="journey">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="label">Flight log</span>
+        <h2>Where I've been so far.</h2>
+      </div>
+      <ol class="log">
+        <li><span class="when mono">Since Sep 2024</span><div><h3>Software Engineer</h3><span class="org">GNSS and RF projects, defense sector · Abu Dhabi</span><p>Building and maintaining software tools that automate technical workflows for GNSS projects.</p></div></li>
+        <li class="space"><span class="when mono">Apr to Aug 2024</span><div><h3>Space Applications Trainee <span class="spacetag mono">🛰 Space</span></h3><span class="org">UAE Space Agency · Abu Dhabi</span><p>Trained in geospatial analytics and remote sensing through a UAE Space Agency initiative, working on practical space projects.</p></div></li>
+        <li><span class="when mono">Jan 2024</span><div><h3>Algorithm Engineering Trainee</h3><span class="org">MBZUAI, CIAI Engineering Team · Abu Dhabi</span><p>Helped turn Jais, the leading Arabic large language model, into a real product.</p></div></li>
+        <li><span class="when mono">2022 to 2023</span><div><h3>Graduate Research and Teaching Assistant</h3><span class="org">Khalifa University · Abu Dhabi</span><p>Ran labs for COSC-101 with 50+ students and assisted on COSC-434, Intro to Machine Learning.</p></div></li>
+        <li><span class="when mono">Summer 2021</span><div><h3>Intern</h3><span class="org">Children's National Hospital · Washington, D.C.</span><p>Built RestEasy, a cross-platform app prototype in C# and Xamarin.Forms that monitors children's nighttime asthma.</p></div></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="block" id="training">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="label">Training and programs</span>
+        <h2>Always in training, including for orbit.</h2>
+      </div>
+      <div class="train">
+        <article class="space-card wide">
+          <svg class="orbit-ico" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="9"/><ellipse cx="32" cy="32" rx="27" ry="10" transform="rotate(-25 32 32)"/><rect x="50" y="15" width="7" height="7" rx="1.5"/></svg>
+          <span class="label">Apr to Aug 2024 · UAE Space Agency</span>
+          <h3>Space Applications</h3>
+          <p>Hands-on training in geospatial analytics and remote sensing: turning satellite imagery and Earth-observation data into answers, through practical space projects.</p>
+          <div class="tags"><span>Remote sensing</span><span>Geospatial analytics</span><span>Earth observation</span></div>
+        </article>
+        <article class="space-card">
+          <span class="label">Certification · Safran</span>
+          <h3>Skydel Advanced Course</h3>
+          <p>Advanced training on Skydel, Safran's software-defined GNSS simulator for generating and testing satellite navigation signals.</p>
+          <div class="tags"><span>GNSS simulation</span><span>RF</span></div>
+        </article>
+        <article><span class="label">2023 · Dubai</span><h3>Samsung Innovation Campus</h3><p>AI course with the UAE Office of AI and the National Program for Coders.</p></article>
+        <article><span class="label">2022 · Dubai</span><h3>Sibaq Lahja, Coders HQ</h3><p>Immersive Arabic NLP program, building toward an Arabic diacritizer.</p></article>
+        <article><span class="label">2021 · Abu Dhabi</span><h3>42 Abu Dhabi Piscine</h3><p>Four intensive weeks of C, shell, git and algorithms, with daily projects and exams.</p></article>
+        <article><span class="label">2022 · Google</span><h3>Data Analytics Professional Certificate</h3><p>Spreadsheets, SQL, R and data visualization.</p></article>
+        <article><span class="label">2022 · Khalifa University</span><h3>Python for Data Science</h3><p>Six-week hands-on training.</p></article>
+        <article><span class="label">LearnQuest</span><h3>Ethics in the Age of AI</h3><p>Specialization on building and using AI responsibly.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="awards">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="label">Hackathons and awards</span>
+        <h2>A few good launches.</h2>
+      </div>
+      <ul class="awards">
+        <li><span class="badge win">Winner</span><div><b>Pioneers 4.0 Hackathon, 4th edition</b><span>MoIAT and EDGE Group · Mar 2024. Optimized blending schedules against production needs, with a real-time monitoring dashboard.</span></div></li>
+        <li><span class="badge">2nd place</span><div><b>Solar Decathlon Middle East, energy efficiency</b><span>DEWA · Nov 2021, with the Khalifa University smart home team.</span></div></li>
+        <li><span class="badge">1st place</span><div><b>National Physics Olympiad, theoretical exam</b><span>UAE Ministry of Education · May 2016. 6th overall.</span></div></li>
+        <li><span class="badge">Judge</span><div><b>AI National Championship 2023, ChatGPT category</b><span>UAE Ministry of Education · Sep 2023.</span></div></li>
+        <li><span class="badge">Hacker</span><div><b>BioHack3D, Digicode-Ed Challenge, Pioneers 4.0 1st and 2nd editions</b><span>NYU Abu Dhabi, Coders HQ, MoIAT and EDGE · 2022 to 2023. Cybersecurity, AI for education, and predictive maintenance.</span></div></li>
+        <li><span class="badge">Honors</span><div><b>Dean's List, Golden Key, IEEE student chapter vice president</b><span>Khalifa University · 2017 to 2021.</span></div></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="block" id="toolkit">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="label">Toolkit</span>
+        <h2>What I reach for.</h2>
+      </div>
+      <div class="tools">
+        <span>Python</span><span>PyTorch</span><span>NumPy</span><span>pandas</span><span>MATLAB</span><span>C / C++</span><span>C#</span><span>Java</span><span>Julia</span><span>SQL</span><span>R</span><span>Git</span><span>Linux</span><span>Docker</span><span>Flask</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="offclock">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="label">Off the clock</span>
+        <h2>The rest of the signal.</h2>
+      </div>
+      <div class="offclock">
+        <div>
+          <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M12 24V8l14-3v16"/><circle cx="8.5" cy="24" r="3.5"/><circle cx="22.5" cy="21" r="3.5"/></svg>
+          <h3>Music</h3><p>Always playing somewhere nearby.</p>
+        </div>
+        <div>
+          <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="11"/><path d="M16 9v1M16 22v1M12 13a4 4 0 1 1 5 3.9c-.7.3-1 .8-1 1.6"/></svg>
+          <h3>Philosophy</h3><p>Asking why, then asking it again.</p>
+        </div>
+        <div>
+          <svg viewBox="0 0 32 32" aria-hidden="true"><rect x="4" y="9" width="24" height="17" rx="2"/><path d="M4 14h24M9 9l3 5M16 9l3 5M23 9l3 5"/></svg>
+          <h3>Cinema</h3><p>Stories, framing, and a good soundtrack.</p>
+        </div>
+        <div>
+          <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M4 9l12-5 12 5-12 5z"/><path d="M9 11.5V18c0 2 3.2 4 7 4s7-2 7-4v-6.5M28 9v8"/></svg>
+          <h3>Learning</h3><p>Picking up something new on purpose.</p>
+        </div>
+        <div>
+          <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M5 24l8-8M18 6a6 6 0 0 0-5 8l-2 2 5 5 2-2a6 6 0 0 0 8-5l-4 1-2-2 1-4z"/></svg>
+          <h3>Improving things</h3><p>If it can work better, I want to try.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="contact">
+    <div class="wrap contact">
+      <div>
+        <span class="label">Freelance and collaboration</span>
+        <h2 style="margin-top:10px">Have a problem that needs a good algorithm?</h2>
+        <ul class="services">
+          <li>Algorithm design, optimization and performance work</li>
+          <li>Signal and data processing in Python or MATLAB</li>
+          <li>Machine learning prototypes, including Arabic NLP</li>
+          <li>Python tools, automation and small web apps</li>
+        </ul>
+      </div>
+      <div class="reach">
+        <span class="label">Get in touch</span>
+        <div class="email-row">
+          <span class="email" id="email">mariam.mk.alzaabi@gmail.com</span>
+          <button class="copy" id="copy" type="button">Copy</button>
+        </div>
+        <div class="links">
+          <a href="https://www.linkedin.com/in/mariam-mk-alzaabi/" target="_blank" rel="noopener">LinkedIn ↗</a>
+          <a href="https://github.com/MariamAlz" target="_blank" rel="noopener">GitHub ↗</a>
+          <a href="https://medium.com/@mariam.alzaabi" target="_blank" rel="noopener">Medium ↗</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap mono">
+    <span>© 2026 Mariam Alzaabi</span>
+    <span>Signal acquired from Abu Dhabi · 24.45° N 54.38° E</span>
+    <a href="#top">Back to orbit ↑</a>
+  </div>
+</footer>
+
+<script>
+(function () {
+  // Project filters
+  var chips = document.querySelectorAll('.chip');
+  var cards = document.querySelectorAll('#grid .card');
+  chips.forEach(function (c) {
+    c.addEventListener('click', function () {
+      var f = c.dataset.f;
+      chips.forEach(function (o) { o.setAttribute('aria-pressed', String(o === c)); });
+      cards.forEach(function (card) {
+        card.hidden = !(f === 'all' || card.dataset.k.split(' ').indexOf(f) > -1);
+      });
+    });
+  });
+
+  // Copy email
+  var btn = document.getElementById('copy');
+  btn.addEventListener('click', function () {
+    var text = document.getElementById('email').textContent;
+    var done = function () { btn.textContent = 'Copied'; setTimeout(function () { btn.textContent = 'Copy'; }, 1600); };
+    var fallback = function () {
+      var r = document.createRange(); r.selectNodeContents(document.getElementById('email'));
+      var s = getSelection(); s.removeAllRanges(); s.addRange(r); btn.textContent = 'Selected';
+      setTimeout(function () { btn.textContent = 'Copy'; }, 1600);
+    };
+    try { navigator.clipboard.writeText(text).then(done, fallback); } catch (e) { fallback(); }
+  });
+
+  // GNSS sky plot: azimuth/elevation polar view, zenith at centre
+  var cv = document.getElementById('sky');
+  var ctx = cv.getContext('2d');
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var sats = [
+    ['G07', 'a', 40, 62, 1], ['G12', 'a', 128, 34, 1], ['G21', 'a', 215, 51, -1], ['G30', 'a', 300, 22, 1],
+    ['E11', 'b', 75, 18, -1], ['E24', 'b', 170, 70, 1], ['E33', 'b', 262, 40, 1], ['E05', 'b', 345, 55, -1],
+    ['C19', 'c', 10, 28, 1], ['C27', 'c', 110, 58, -1], ['C36', 'c', 195, 15, 1], ['C42', 'c', 240, 78, -1]
+  ];
+  var trails = sats.map(function () { return []; });
+  function css(n) { return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+  var size = 0, dpr = 1;
+  function resize() {
+    var r = cv.getBoundingClientRect(); dpr = window.devicePixelRatio || 1;
+    size = r.width; cv.width = size * dpr; cv.height = size * dpr;
+  }
+  function pos(az, el, R) {
+    var rr = R * (90 - el) / 90, a = (az - 90) * Math.PI / 180;
+    return [size / 2 + rr * Math.cos(a), size / 2 + rr * Math.sin(a)];
+  }
+  function draw(t) {
+    if (!size) return;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, size, size);
+    var R = size / 2 - 22, c = size / 2;
+    var line = css('--line'), muted = css('--muted');
+    ctx.strokeStyle = line; ctx.lineWidth = 1;
+    [0, 30, 60].forEach(function (el) { ctx.beginPath(); ctx.arc(c, c, R * (90 - el) / 90, 0, Math.PI * 2); ctx.stroke(); });
+    for (var a = 0; a < 360; a += 30) { var p = pos(a, 0, R); ctx.beginPath(); ctx.moveTo(c, c); ctx.lineTo(p[0], p[1]); ctx.stroke(); }
+    ctx.fillStyle = muted; ctx.font = '500 11px "JetBrains Mono", monospace'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    [['N', 0], ['E', 90], ['S', 180], ['W', 270]].forEach(function (d) { var p = pos(d[1], -12, R); ctx.fillText(d[0], p[0], p[1]); });
+    ctx.textAlign = 'left';
+    [30, 60].forEach(function (el) { var p = pos(45, el, R); ctx.fillText(el + '°', p[0] + 4, p[1]); });
+    var cols = { a: css('--sat-a'), b: css('--sat-b'), c: css('--sat-c') };
+    // a small satellite orbiting the portrait
+    var ang = reduce ? 0.8 : t * 0.0006, orx = size * 0.24, ory = size * 0.09;
+    ctx.save(); ctx.translate(c, c); ctx.rotate(-0.35);
+    ctx.strokeStyle = css('--accent'); ctx.globalAlpha = 0.45; ctx.setLineDash([3, 5]);
+    ctx.beginPath(); ctx.ellipse(0, 0, orx, ory, 0, 0, Math.PI * 2); ctx.stroke(); ctx.setLineDash([]); ctx.globalAlpha = 1;
+    ctx.translate(orx * Math.cos(ang), ory * Math.sin(ang));
+    ctx.fillStyle = css('--sat-a'); ctx.fillRect(-12, -2.5, 7, 5); ctx.fillRect(5, -2.5, 7, 5);
+    ctx.fillStyle = css('--accent'); ctx.fillRect(-3.5, -3.5, 7, 7);
+    ctx.restore();
+    sats.forEach(function (s, i) {
+      var az = s[2] + (reduce ? 0 : s[4] * t * 0.0012 * (1 + i % 3 * 0.35));
+      var el = s[3] + (reduce ? 0 : Math.sin(t * 0.00025 + i) * 6);
+      var p = pos(az % 360, el, R), col = cols[s[1]];
+      var tr = trails[i]; tr.push(p); if (tr.length > 60) tr.shift();
+      ctx.strokeStyle = col; ctx.lineWidth = 1.5;
+      for (var k = 1; k < tr.length; k++) { ctx.globalAlpha = k / tr.length * 0.5; ctx.beginPath(); ctx.moveTo(tr[k - 1][0], tr[k - 1][1]); ctx.lineTo(tr[k][0], tr[k][1]); ctx.stroke(); }
+      ctx.globalAlpha = 1; ctx.fillStyle = col;
+      ctx.beginPath(); ctx.arc(p[0], p[1], 4.5, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = muted; ctx.fillText(s[0], p[0] + 8, p[1] - 8);
+    });
+  }
+  function loop(t) { draw(t); if (!reduce) requestAnimationFrame(loop); }
+  resize(); window.addEventListener('resize', function () { resize(); trails.forEach(function (x) { x.length = 0; }); draw(performance.now()); });
+  requestAnimationFrame(loop);
+
+  // Thesis illustration: hazy vs dehazed underwater scene, drawn procedurally
+  (function () {
+    var hc = document.getElementById('haze'), hx = hc.getContext('2d'), sl = document.getElementById('hazeSlider');
+    var w = hc.width, h = hc.height, rnd = function (i) { var x = Math.sin(i * 127.1) * 43758.5; return x - Math.floor(x); };
+    function scene(clear) {
+      var g = hx.createLinearGradient(0, 0, 0, h);
+      if (clear) { g.addColorStop(0, '#2a8fb8'); g.addColorStop(0.6, '#145a7a'); g.addColorStop(1, '#0b2f45'); }
+      else { g.addColorStop(0, '#6fb6a6'); g.addColorStop(0.6, '#5a9c8c'); g.addColorStop(1, '#4b8578'); }
+      hx.fillStyle = g; hx.fillRect(0, 0, w, h);
+      // light rays
+      hx.globalAlpha = clear ? 0.12 : 0.05; hx.fillStyle = '#ffffff';
+      for (var r = 0; r < 5; r++) { hx.beginPath(); hx.moveTo(80 + r * 120, 0); hx.lineTo(140 + r * 120, 0); hx.lineTo(60 + r * 140, h); hx.lineTo(20 + r * 140, h); hx.fill(); }
+      hx.globalAlpha = 1;
+      // seabed and rocks
+      hx.fillStyle = clear ? '#c9a46a' : '#7fa48d';
+      hx.beginPath(); hx.moveTo(0, h); for (var x = 0; x <= w; x += 20) hx.lineTo(x, h - 46 - Math.sin(x * 0.02) * 10 - rnd(x) * 6); hx.lineTo(w, h); hx.fill();
+      var coral = clear ? ['#ff7a59', '#ffb347', '#e0567a', '#9b6bff'] : ['#8fae9c', '#94b09c', '#86a896', '#8aa99b'];
+      for (var i = 0; i < 14; i++) {
+        var cx = 30 + i * 45 + rnd(i) * 20, base = h - 44, ht = 30 + rnd(i + 9) * 50;
+        hx.strokeStyle = coral[i % 4]; hx.lineWidth = 5; hx.lineCap = 'round';
+        hx.beginPath(); hx.moveTo(cx, base); hx.lineTo(cx + (rnd(i + 3) - 0.5) * 20, base - ht); hx.stroke();
+        hx.beginPath(); hx.moveTo(cx, base - ht * 0.5); hx.lineTo(cx + 14, base - ht * 0.8); hx.stroke();
+      }
+      // fish
+      for (var f = 0; f < 6; f++) {
+        var fx2 = 70 + f * 95 + rnd(f + 20) * 30, fy = 70 + rnd(f + 30) * 120, s = 10 + rnd(f) * 8;
+        hx.fillStyle = clear ? (f % 2 ? '#ffd166' : '#ff9f1c') : '#9fbfb0';
+        hx.beginPath(); hx.ellipse(fx2, fy, s, s * 0.5, 0, 0, 6.28); hx.fill();
+        hx.beginPath(); hx.moveTo(fx2 - s, fy); hx.lineTo(fx2 - s * 1.7, fy - s * 0.5); hx.lineTo(fx2 - s * 1.7, fy + s * 0.5); hx.fill();
+      }
+      // a small robot sub
+      hx.fillStyle = clear ? '#f2f4f8' : '#a9c4ba'; hx.beginPath(); hx.ellipse(w * 0.72, 110, 46, 18, 0, 0, 6.28); hx.fill();
+      hx.fillStyle = clear ? '#E9B467' : '#a3bfb2'; hx.beginPath(); hx.arc(w * 0.72 + 30, 110, 7, 0, 6.28); hx.fill();
+      if (!clear) { hx.fillStyle = 'rgba(120,180,165,0.55)'; hx.fillRect(0, 0, w, h); }
+    }
+    var A = document.createElement('canvas'), B = document.createElement('canvas'); A.width = B.width = w; A.height = B.height = h;
+    var ctxA = A.getContext('2d'), ctxB = B.getContext('2d');
+    var keep = hx; hx = ctxA; scene(false); hx = ctxB; scene(true); hx = keep;
+    function paint() {
+      var cut = w * sl.value / 100;
+      hx.drawImage(A, 0, 0); hx.save(); hx.beginPath(); hx.rect(cut, 0, w - cut, h); hx.clip(); hx.drawImage(B, 0, 0); hx.restore();
+      hx.fillStyle = '#E9B467'; hx.fillRect(cut - 1.5, 0, 3, h);
+      hx.beginPath(); hx.arc(cut, h / 2, 12, 0, 6.28); hx.fill();
+      hx.fillStyle = '#1a1205'; hx.font = '600 12px sans-serif'; hx.textAlign = 'center'; hx.textBaseline = 'middle'; hx.fillText('⇆', cut, h / 2 + 1);
+    }
+    sl.addEventListener('input', paint); paint();
+  })();
+
+  // Descent scene: scroll takes the camera from GNSS orbit down to Abu Dhabi.
+  var LAND = 'data:image/png;base64,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';
+  var D2R = Math.PI / 180, AUH_LAT = 24.4539, AUH_LON = 54.3773;
+  var gl = null, glc = document.getElementById('earth');
+  var fx = document.getElementById('fx'), g2 = fx.getContext('2d');
+  var hud = { alt: document.getElementById('alt'), ph: document.getElementById('phase'), sub: document.getElementById('sub') };
+  var W = 0, H = 0, DPR = 1, prog = 0, shown = 0, stars = [], shoot = null;
+  var VS = 'attribute vec2 a;void main(){gl_Position=vec4(a,0.,1.);}';
+  var FS = [
+    '#extension GL_OES_standard_derivatives : enable',
+    'precision highp float;',
+    'uniform vec2 uRes;uniform vec2 uOff;uniform float uD,uRot,uTilt,uTime,uP,uDim;uniform sampler2D uLand;',
+    'const float PI=3.14159265;const float F=1.6;',
+    'float land(vec2 uv){return texture2D(uLand,uv).r;}',
+    'void main(){',
+    ' vec2 uv=(gl_FragCoord.xy-.5*uRes)/uRes.y-uOff;',
+    ' vec3 ro=vec3(0.,0.,uD);vec3 rd=normalize(vec3(uv,-F));',
+    ' float b=dot(ro,rd);float c=dot(ro,ro)-1.;float h=b*b-c;',
+    ' vec3 sun=normalize(vec3(-.55,.45,.7));',
+    ' vec3 col=vec3(0.);float a=0.;',
+    ' float dmin=length(ro-rd*b);',
+    ' if(h>0.&&-b-sqrt(h)>0.){',
+    '  float t=-b-sqrt(h);vec3 n=normalize(ro+rd*t);',
+    '  float ct=cos(uTilt),st=sin(uTilt);',
+    '  vec3 e=vec3(n.x,n.y*ct+n.z*st,-n.y*st+n.z*ct);',
+    '  float lat=asin(clamp(e.y,-1.,1.));float lon=atan(e.x,e.z)+uRot;',
+    '  lon=mod(lon+PI,2.*PI)-PI;',
+    '  float latd=lat/PI*180.,lond=lon/PI*180.;',
+    '  float step=.75;',
+    '  float fy=(latd+90.)/step;float iy=floor(fy);float latc=(iy+.5)*step-90.;',
+    '  float nc=max(1.,floor(360./step*cos(latc*PI/180.)));',
+    '  float fxx=(lond+180.)/360.*nc;float ix=floor(fxx);',
+    '  vec2 cuv=vec2((ix+.5)/nc,(90.-latc)/180.);',
+    '  vec2 q=vec2(fract(fxx)-.5,fract(fy)-.5);float r=length(q);',
+    '  float fw=fwidth(fy);',
+    '  float dr=mix(.28,.17,smoothstep(.02,.12,1./max(fw*40.,.001)*.05));float dotm=1.-smoothstep(dr-fw,dr+fw,r);',
+    '  float L=land(cuv);float Ls=land(vec2((lond+180.)/360.,(90.-latd)/180.));',
+    '  float lm=mix(dotm*L,Ls*.55,smoothstep(.25,.9,fw));',
+    '  float diff=clamp(dot(n,sun),0.,1.);float day=smoothstep(-.15,.35,dot(n,sun));',
+    '  vec3 ocean=mix(vec3(.02,.03,.08),vec3(.05,.10,.24),day)*(.55+.45*diff);',
+    '  vec3 dotc=mix(vec3(.55,.42,.24),vec3(.98,.78,.45),day);',
+    '  col=ocean+dotc*lm*(.35+.65*day);',
+    '  float gx=abs(fract(lond/15.+.5)-.5)*15.,gy=abs(fract(latd/15.+.5)-.5)*15.;',
+    '  float gw=fwidth(lond)*1.2+.0001;',
+    '  float grid=(1.-smoothstep(0.,gw,gx))+(1.-smoothstep(0.,fwidth(latd)*1.2+.0001,gy));',
+    '  col+=vec3(.25,.35,.75)*min(grid,1.)*.12;',
+    '  float fr=pow(1.-max(dot(n,-rd),0.),3.);',
+    '  col+=vec3(.30,.48,1.)*fr*(.25+.75*day);',
+    '  a=1.;',
+    ' }else{',
+    '  float g=exp(-(dmin-1.)*9.)*step(1.,dmin);',
+    '  float tw=clamp(dot(normalize(ro+rd*max(-b,0.)),sun)*.6+.5,0.,1.);',
+    '  col=vec3(.30,.50,1.)*g*(.35+.65*tw);a=clamp(g,0.,1.);',
+    ' }',
+    ' float haze=smoothstep(.8,1.,uP);',
+    ' col=mix(col,vec3(.10,.18,.38),haze*.35*a);',
+    ' gl_FragColor=vec4(col*uDim,a);',
+    '}'
+  ].join('\n');
+
+  function sm(a, b, x) { x = Math.min(1, Math.max(0, (x - a) / (b - a))); return x * x * (3 - 2 * x); }
+  function mix(a, b, t) { return a + (b - a) * t; }
+
+  // Camera path as a function of scroll progress p and time
+  function cam(p, t) {
+    var d = 1.32 + 2.1 * Math.pow(1 - p, 1.5);
+    var offY = mix(-0.78, 0, sm(0, 0.45, p));
+    var offX = mix(0.12, 0, sm(0.1, 0.5, p));
+    var idle = (reduce ? 0.6 : t * 0.00005) + 0.4;
+    var target = AUH_LON * D2R;
+    var k = Math.round((idle - target) / (2 * Math.PI));
+    var rot = mix(idle, target + k * 2 * Math.PI, sm(0.3, 0.92, p));
+    var tilt = mix(8 * D2R, AUH_LAT * D2R, sm(0.25, 0.92, p));
+    return { d: d, off: [offX, offY], rot: rot, tilt: tilt };
+  }
+
+  function initGL() {
+    try { gl = glc.getContext('webgl', { premultipliedAlpha: false, alpha: true }); } catch (e) { gl = null; }
+    if (!gl) return false;
+    gl.getExtension('OES_standard_derivatives');
+    function sh(type, src) { var o = gl.createShader(type); gl.shaderSource(o, src); gl.compileShader(o); if (!gl.getShaderParameter(o, gl.COMPILE_STATUS)) throw gl.getShaderInfoLog(o); return o; }
+    try {
+      var pr = gl.createProgram();
+      gl.attachShader(pr, sh(gl.VERTEX_SHADER, VS)); gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, FS));
+      gl.linkProgram(pr); gl.useProgram(pr);
+    } catch (e) { console.warn(e); gl = null; return false; }
+    var buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+    var al = gl.getAttribLocation(pr, 'a'); gl.enableVertexAttribArray(al); gl.vertexAttribPointer(al, 2, gl.FLOAT, false, 0, 0);
+    gl.U = {};
+    ['uRes', 'uOff', 'uD', 'uRot', 'uTilt', 'uTime', 'uP', 'uDim', 'uLand'].forEach(function (n) { gl.U[n] = gl.getUniformLocation(pr, n); });
+    var tex = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE, 1, 1, 0, gl.LUMINANCE, gl.UNSIGNED_BYTE, new Uint8Array([0]));
+    var img = new Image();
+    img.onload = function () {
+      gl.bindTexture(gl.TEXTURE_2D, tex);
+      gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE, gl.LUMINANCE, gl.UNSIGNED_BYTE, img);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      if (reduce) frame(performance.now());
+    };
+    img.src = LAND;
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    return true;
+  }
+
+  function sizeScene() {
+    DPR = Math.min(window.devicePixelRatio || 1, 1.5); W = innerWidth; H = innerHeight;
+    [glc, fx].forEach(function (c) { c.width = Math.round(W * DPR); c.height = Math.round(H * DPR); });
+    g2.setTransform(DPR, 0, 0, DPR, 0, 0);
+    stars = []; var n = Math.round(W * H / 3600);
+    for (var i = 0; i < n; i++) stars.push([Math.random(), Math.random(), Math.random() * 1.3 + 0.3, Math.random() * 6.28, Math.random() * 0.6 + 0.4]);
+  }
+
+  // earth frame -> view frame (inverse of the shader's view -> earth mapping)
+  function toView(x, y, z, c) {
+    var cr = Math.cos(-c.rot), sr = Math.sin(-c.rot);
+    // undo longitude rotation: lon_view = lon_earth - rot
+    var r = Math.sqrt(x * x + z * z), lon = Math.atan2(x, z) - c.rot;
+    var ex = r * Math.sin(lon), ez = r * Math.cos(lon), ey = y;
+    var ct = Math.cos(c.tilt), st = Math.sin(c.tilt);
+    // shader: e.y = n.y*ct + n.z*st ; e.z = -n.y*st + n.z*ct  => invert
+    var ny = ey * ct - ez * st, nz = ey * st + ez * ct;
+    return [ex, ny, nz];
+  }
+  function project(v, c) {
+    var den = c.d - v[2]; if (den < 0.05) return null;
+    var u = 1.6 * v[0] / den + c.off[0], w = 1.6 * v[1] / den + c.off[1];
+    return [W / 2 + u * H, H / 2 - w * H, den];
+  }
+  function hidden(v, c) {
+    // behind the globe from the camera's point of view
+    var cx = 0 - v[0], cy = 0 - v[1], cz = c.d - v[2];
+    var L = Math.sqrt(cx * cx + cy * cy + cz * cz); cx /= L; cy /= L; cz /= L;
+    var b = v[0] * cx + v[1] * cy + v[2] * cz, cc = v[0] * v[0] + v[1] * v[1] + v[2] * v[2] - 1;
+    var h = b * b - cc; return h > 0 && (-b - Math.sqrt(h)) > 0.001;
+  }
+  var orbits = [
+    { r: 1.9, inc: 55, raan: 0, col: '--sat-a', n: 4, ph: 0 },
+    { r: 1.9, inc: 55, raan: 120, col: '--sat-a', n: 4, ph: 1 },
+    { r: 2.05, inc: 56, raan: 240, col: '--sat-b', n: 3, ph: 2 },
+    { r: 1.35, inc: 97, raan: 60, col: '--sat-c', n: 2, ph: 0.5 }
+  ];
+  function orbitPt(o, a) {
+    var x = o.r * Math.cos(a), z = o.r * Math.sin(a), y = 0;
+    var i = o.inc * D2R; var y2 = z * Math.sin(i), z2 = z * Math.cos(i);
+    var R = o.raan * D2R; return [x * Math.cos(R) + z2 * Math.sin(R), y2, -x * Math.sin(R) + z2 * Math.cos(R)];
+  }
+  function css(n) { return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+
+  function drawFx(t, p, c) {
+    g2.clearRect(0, 0, W, H);
+    // stars drift as the camera turns, and fade as we enter the atmosphere
+    var fade = 1 - sm(0.72, 0.97, p), ink = css('--ink');
+    var dx = (c.rot * 80) % W, dy = p * H * 0.6;
+    g2.fillStyle = ink;
+    if (fade > 0) stars.forEach(function (s) {
+      var x = ((s[0] * W - dx * s[4]) % W + W) % W, y = ((s[1] * H - dy * s[4]) % H + H) % H;
+      g2.globalAlpha = fade * 0.75 * (reduce ? 0.8 : 0.55 + 0.45 * Math.sin(t * 0.0013 + s[3]));
+      g2.beginPath(); g2.arc(x, y, s[2], 0, 6.28); g2.fill();
+    });
+    if (!reduce && fade > 0.3) {
+      if (!shoot && Math.random() < 0.004) shoot = { x: Math.random() * W * 0.7, y: Math.random() * H * 0.4, life: 0 };
+      if (shoot) {
+        shoot.life++; var L = shoot.life, x = shoot.x + L * 10, y = shoot.y + L * 4;
+        var gr = g2.createLinearGradient(x - 110, y - 44, x, y); gr.addColorStop(0, 'rgba(233,180,103,0)'); gr.addColorStop(1, css('--accent'));
+        g2.globalAlpha = Math.max(0, 1 - L / 45); g2.strokeStyle = gr; g2.lineWidth = 1.6;
+        g2.beginPath(); g2.moveTo(x - 110, y - 44); g2.lineTo(x, y); g2.stroke();
+        if (L > 45) shoot = null;
+      }
+    }
+    // GNSS constellation rings and satellites
+    var oa = 1 - sm(0.55, 0.8, p);
+    if (oa > 0.01) orbits.forEach(function (o) {
+      var col = css(o.col), prev = null;
+      g2.strokeStyle = col; g2.lineWidth = 1;
+      for (var k = 0; k <= 120; k++) {
+        var v = toView.apply(null, orbitPt(o, k / 120 * 6.2832).concat([c])), q = project(v, c);
+        var hid = hidden(v, c);
+        if (q && prev && !hid) { g2.globalAlpha = oa * 0.35; g2.beginPath(); g2.moveTo(prev[0], prev[1]); g2.lineTo(q[0], q[1]); g2.stroke(); }
+        prev = hid ? null : q;
+      }
+      for (var j = 0; j < o.n; j++) {
+        var ang = (reduce ? 0 : t * 0.00009 * (2.2 / o.r)) + j / o.n * 6.2832 + o.ph;
+        var v2 = toView.apply(null, orbitPt(o, ang).concat([c])), s2 = project(v2, c);
+        if (!s2 || hidden(v2, c)) continue;
+        var sz = Math.min(9, 7 / s2[2] * 2.2);
+        g2.globalAlpha = oa; g2.fillStyle = col;
+        g2.fillRect(s2[0] - sz * 1.9, s2[1] - sz * 0.35, sz * 1.2, sz * 0.7);
+        g2.fillRect(s2[0] + sz * 0.7, s2[1] - sz * 0.35, sz * 1.2, sz * 0.7);
+        g2.fillStyle = css('--accent'); g2.fillRect(s2[0] - sz * 0.5, s2[1] - sz * 0.5, sz, sz);
+      }
+    });
+    // Abu Dhabi marker
+    var la = AUH_LAT * D2R, lo = AUH_LON * D2R;
+    var vm = toView(Math.cos(la) * Math.sin(lo), Math.sin(la), Math.cos(la) * Math.cos(lo), c);
+    var m = project(vm, c);
+    if (m && !hidden([vm[0] * 1.001, vm[1] * 1.001, vm[2] * 1.001], c)) {
+      var ma = sm(0.15, 0.4, p);
+      if (ma > 0) {
+        var pulse = reduce ? 0.5 : (t * 0.0006) % 1;
+        g2.globalAlpha = ma; g2.fillStyle = css('--accent');
+        g2.beginPath(); g2.arc(m[0], m[1], 4, 0, 6.28); g2.fill();
+        g2.strokeStyle = css('--accent'); g2.lineWidth = 1.5;
+        g2.globalAlpha = ma * (1 - pulse); g2.beginPath(); g2.arc(m[0], m[1], 4 + pulse * 26, 0, 6.28); g2.stroke();
+        g2.globalAlpha = ma; g2.font = '500 11px "JetBrains Mono", monospace'; g2.fillStyle = ink;
+        g2.fillText('ABU DHABI', m[0] + 12, m[1] - 10);
+      }
+    }
+    g2.globalAlpha = 1;
+  }
+
+  function hudUpdate(p, c) {
+    var alt = Math.round(20200 * Math.pow(1 - p, 2.2));
+    hud.alt.textContent = alt.toLocaleString('en-US') + ' km';
+    hud.ph.textContent = alt > 2000 ? 'MEO · GNSS orbit' : alt > 160 ? 'LEO · low Earth orbit' : alt > 100 ? 'Kármán line ahead' : alt > 2 ? 'Atmosphere · descending' : 'Touchdown · Abu Dhabi';
+    var lat = c.tilt / D2R, lon = ((c.rot / D2R + 540) % 360) - 180;
+    hud.sub.textContent = Math.abs(lat).toFixed(2) + '° ' + (lat >= 0 ? 'N' : 'S') + ' ' + Math.abs(lon).toFixed(2) + '° ' + (lon >= 0 ? 'E' : 'W');
+  }
+
+  function readScroll() {
+    var max = document.documentElement.scrollHeight - innerHeight;
+    prog = max > 0 ? Math.min(1, Math.max(0, scrollY / max)) : 0;
+  }
+  function frame(t) {
+    shown += (prog - shown) * (reduce ? 1 : 0.08);
+    var p = shown, c = cam(p, t);
+    if (gl) {
+      gl.viewport(0, 0, glc.width, glc.height); gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
+      gl.uniform2f(gl.U.uRes, glc.width, glc.height); gl.uniform2f(gl.U.uOff, c.off[0], c.off[1]);
+      gl.uniform1f(gl.U.uD, c.d); gl.uniform1f(gl.U.uRot, c.rot); gl.uniform1f(gl.U.uTilt, c.tilt);
+      gl.uniform1f(gl.U.uTime, t * 0.001); gl.uniform1f(gl.U.uP, p); gl.uniform1f(gl.U.uDim, 1 - 0.62 * sm(0.08, 0.22, p) + 0.12 * sm(0.9, 1, p)); gl.uniform1i(gl.U.uLand, 0);
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+    }
+    drawFx(t, p, c); hudUpdate(p, c);
+  }
+  function sceneLoop(t) { frame(t); requestAnimationFrame(sceneLoop); }
+  sizeScene(); readScroll(); shown = prog;
+  if (!initGL()) glc.hidden = true;
+  addEventListener('resize', function () { sizeScene(); readScroll(); if (reduce) frame(performance.now()); });
+  addEventListener('scroll', function () { readScroll(); if (reduce) frame(performance.now()); }, { passive: true });
+  if (reduce) frame(performance.now()); else requestAnimationFrame(sceneLoop);
+})();
+</script>
+</body>
 </html>
