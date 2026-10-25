@@ -1359,7 +1359,7 @@ kbd { font-family: "JetBrains Mono", monospace; font-size: 0.85em; padding: 1px 
     var days = Math.round((new Date(ymd(d)) - new Date(ymd(now))) / 864e5), h = hour(d), night = h >= 18 || h < 4;
     if (days === 0) return ar ? (night ? 'الليلة' : 'اليوم') + ' الساعة ' + t : (night ? 'tonight' : 'today') + ' at ' + t;
     if (days === 1) return ar ? 'غدًا الساعة ' + t : 'tomorrow at ' + t;
-    var wd = d.toLocaleDateString(ar ? 'ar-AE' : 'en-US', { timeZone: TZ, weekday: 'long' });
+    var wd = d.toLocaleDateString(ar ? 'ar-AE-u-nu-latn' : 'en-GB', days > 5 ? { timeZone: TZ, weekday: 'long', day: 'numeric', month: 'long' } : { timeZone: TZ, weekday: 'long' });
     return ar ? 'يوم ' + wd + ' الساعة ' + t : 'on ' + wd + ' at ' + t;
   }
   var ICON = '<svg viewBox="0 0 16 16" aria-hidden="true"><rect x="6.5" y="6.5" width="3" height="3"/><path d="M8 3.5v3M8 9.5v3M1.5 5.5h4v5h-4zM10.5 5.5h4v5h-4z"/></svg>';
@@ -1378,11 +1378,11 @@ kbd { font-family: "JetBrains Mono", monospace; font-size: 0.85em; padding: 1px 
       b.textContent = ar ? 'محطة الفضاء الدولية فوق أبوظبي الآن!' : 'The ISS is above Abu Dhabi right now!';
       txt = ar ? ' تتجه نحو ' + dir(next.endAz) + (next.visible ? '، انظر إلى السماء.' : '، لكنها لا تُرى في ضوء النهار.')
         : ' Heading ' + dir(next.endAz) + (next.visible ? ', look up.' : ', though it is hidden by daylight.');
-    } else if (vis && new Date(vis.start) - now < 7 * 864e5) {
+    } else if (vis && new Date(vis.start) - now < 10 * 864e5) {
       b.textContent = when(new Date(vis.start), now);
       txt = ar ? 'تمرّ محطة الفضاء الدولية فوق أبوظبي ' : 'The ISS passes over Abu Dhabi ';
       var tail = ar ? '، ترتفع ' + vis.maxEl + '° من ' + dir(vis.startAz) + ' إلى ' + dir(vis.endAz) + '. انظر إلى السماء!'
-        : ', rising ' + vis.maxEl + '° from ' + dir(vis.startAz) + ' to ' + dir(vis.endAz) + '. Look up!';
+        : ', up to ' + vis.maxEl + '° high, moving ' + dir(vis.startAz) + ' to ' + dir(vis.endAz) + '. Look up!';
       el.innerHTML = ICON;
       var sp = document.createElement('span');
       sp.appendChild(document.createTextNode(txt)); sp.appendChild(b); sp.appendChild(document.createTextNode(tail));
