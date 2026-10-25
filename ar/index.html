@@ -78,11 +78,8 @@ header.nav {
 .mark { display: flex; align-items: baseline; gap: 10px; text-decoration: none; }
 .mark b { font-family: var(--font-display); font-weight: 800; font-size: 1.15rem; }
 .mark span { font-family: var(--font-ar); color: var(--accent); font-size: 1.05rem; }
-.mark .nm-ar { font-family: var(--font-ar) !important; letter-spacing: 0; }
-.mark .nm-en { font-family: var(--font-display) !important; }
 .mark b, .mark span { white-space: nowrap; }
-@media (max-width: 640px) { .mark span { display: none; } }
-.mark span.nm-ar { font-size: 1.1rem !important; }
+@media (max-width: 640px) { .mark { flex-direction: column; align-items: flex-start; gap: 0; line-height: 1.15; } .mark span { font-size: 0.9rem; } }
 .nav nav { display: flex; gap: 22px; flex-wrap: wrap; }
 .nav nav a { text-decoration: none; color: var(--muted); font-weight: 500; font-size: 0.95rem; }
 .nav nav a:hover { color: var(--ink); }
@@ -140,8 +137,12 @@ h1, h2, .lede, .about .text, .focus p, .sec-head p { text-shadow: 0 1px 18px rgb
 .hud .ph { color: var(--accent); }
 .hud.lost .ph { color: var(--sat-c); }
 .hud.lock .ph { color: var(--sat-b); }
+.dock { position: fixed; z-index: 4; right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(14px + env(safe-area-inset-bottom, 0px)); display: flex; gap: 8px; }
+.snd-btn[aria-pressed="true"] { color: var(--sat-b); border-color: var(--sat-b); }
+.snd-btn .on { display: none; }
+.snd-btn[aria-pressed="true"] .on { display: inline; }
+.snd-btn[aria-pressed="true"] .off { display: none; }
 .jam-btn {
-  position: fixed; z-index: 4; right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(14px + env(safe-area-inset-bottom, 0px));
   display: inline-flex; align-items: center; gap: 8px; padding: 9px 14px; border-radius: 999px; border: 1px solid var(--line);
   background: rgba(7, 10, 24, 0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
   color: var(--muted); font: 500 0.72rem/1 var(--font-mono); letter-spacing: 0.04em; cursor: pointer; transition: color .2s, border-color .2s;
@@ -149,7 +150,7 @@ h1, h2, .lede, .about .text, .focus p, .sec-head p { text-shadow: 0 1px 18px rgb
 .jam-btn:hover, .jam-btn:focus-visible { color: var(--ink); border-color: var(--sat-c); }
 .jam-btn:disabled { cursor: default; color: var(--sat-c); border-color: var(--sat-c); }
 .jam-btn svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; }
-@media (max-width: 640px) { .jam-btn { padding: 7px 10px; font-size: 0.64rem; } }
+@media (max-width: 640px) { .jam-btn { padding: 7px 10px; font-size: 0.64rem; } .snd-btn span { display: none; } }
 @media (prefers-reduced-motion: no-preference) {
   body.jam::after { content: ""; position: fixed; inset: 0; z-index: 5; pointer-events: none; background: repeating-linear-gradient(0deg, rgba(240, 138, 179, 0.06) 0 1px, transparent 1px 3px); animation: jamScan 0.12s steps(2) infinite; }
   body.jam h1, body.jam h2, body.jam .mark b { animation: jamGlitch 0.22s steps(2) infinite; }
@@ -448,7 +449,10 @@ html[dir="rtl"] .readout, html[dir="rtl"] .email { direction: ltr; }
   <span class="ph" id="phase">MEO · مدار الملاحة</span>
   <span>SUB <b id="sub">0.00° N 0.00° E</b></span>
 </div>
+<div class="dock">
+<button class="jam-btn snd-btn" id="sndBtn" type="button" aria-pressed="false" aria-label="Ambient sound"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 6h2.5l3.5-3v10l-3.5-3H2.5z"/><path class="on" d="M11 5.5a3.5 3.5 0 0 1 0 5M12.8 3.8a6 6 0 0 1 0 8.4"/><path class="off" d="M11 6l4 4M15 6l-4 4"/></svg><span id="sndTxt">Sound</span></button>
 <button class="jam-btn" id="jamBtn" type="button"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 9v5M5.5 6.5a3.5 3.5 0 0 1 5 0M3.5 4.5a6.3 6.3 0 0 1 9 0"/><circle cx="8" cy="8.5" r="1"/></svg><span id="jamTxt">Jam the signal</span></button>
+</div>
 <main id="top">
   <section class="hero">
     <div class="wrap">
@@ -1112,28 +1116,65 @@ html[dir="rtl"] .readout, html[dir="rtl"] .email { direction: ltr; }
   }, { threshold: 0.6 }).observe(q);
 })();
 
-// Name morph: the English and Arabic names decode into each other and swap places
+// Ambient sound: a generated space drone that warms up as you descend to Earth (off by default)
 (function () {
-  var m = document.querySelector('.mark');
-  if (!m || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  var a = m.querySelector('b'), b = m.querySelector('span');
-  m.setAttribute('aria-label', a.textContent + ' · ' + b.textContent);
-  a.setAttribute('aria-hidden', 'true'); b.setAttribute('aria-hidden', 'true');
-  function isAr(s) { return /[\u0600-\u06FF]/.test(s); }
-  function tag(el, s) { var ar = isAr(s); el.classList.toggle('nm-ar', ar); el.classList.toggle('nm-en', !ar); el.dir = ar ? 'rtl' : 'ltr'; el.lang = ar ? 'ar' : 'en'; }
-  function morph(el, to, dur) {
-    var from = el.textContent, pool = (from + to).replace(/\s/g, '') + '#%*/<>01', t0 = performance.now();
-    tag(el, to);
-    (function step(now) {
-      var k = Math.min(1, Math.max(0, (now - t0) / dur)), n = Math.round(from.length + (to.length - from.length) * k), fixed = Math.floor(to.length * k * k), s = '';
-      for (var i = 0; i < n; i++) s += i < fixed || to[i] === ' ' ? (to[i] || '') : pool[Math.random() * pool.length | 0];
-      el.textContent = k < 1 ? s : to;
-      if (k < 1) requestAnimationFrame(step);
-    })(t0);
+  var btn = document.getElementById('sndBtn'), AC = window.AudioContext || window.webkitAudioContext;
+  if (!btn) return;
+  if (!AC) { btn.hidden = true; return; }
+  var ar = document.documentElement.lang === 'ar';
+  btn.querySelector('span').textContent = ar ? 'الصوت' : 'Sound';
+  btn.setAttribute('aria-label', ar ? 'الصوت المحيط' : 'Ambient sound');
+  var ctx, master, filt, drones = [], shimmer, wind, windF, timer, on = false;
+  function build() {
+    ctx = new AC();
+    master = ctx.createGain(); master.gain.value = 0; master.connect(ctx.destination);
+    filt = ctx.createBiquadFilter(); filt.type = 'lowpass'; filt.frequency.value = 1400; filt.Q.value = 0.7; filt.connect(master);
+    // drone: root, fifth, octave, each a pair of slightly detuned oscillators
+    [1, 1.5, 2, 3].forEach(function (m, i) {
+      [-4, 4].forEach(function (d) {
+        var o = ctx.createOscillator(), g = ctx.createGain();
+        o.type = i === 3 ? 'sine' : 'triangle'; o.detune.value = d; g.gain.value = [0.16, 0.09, 0.07, 0.03][i];
+        o.connect(g); g.connect(filt); o.start(); drones.push({ o: o, m: m });
+      });
+    });
+    // shimmer: high bell tones that slowly breathe, strongest in orbit
+    shimmer = ctx.createGain(); shimmer.gain.value = 0; shimmer.connect(master);
+    [880, 1318.5, 1760].forEach(function (f, i) {
+      var o = ctx.createOscillator(), g = ctx.createGain(), lfo = ctx.createOscillator(), lg = ctx.createGain();
+      o.frequency.value = f; g.gain.value = 0.012; lfo.frequency.value = 0.07 + i * 0.05; lg.gain.value = 0.012;
+      lfo.connect(lg); lg.connect(g.gain); o.connect(g); g.connect(shimmer); o.start(); lfo.start();
+    });
+    // wind: filtered noise that rises as we enter the atmosphere
+    var buf = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate), ch = buf.getChannelData(0);
+    for (var i = 0; i < ch.length; i++) ch[i] = Math.random() * 2 - 1;
+    var n = ctx.createBufferSource(); n.buffer = buf; n.loop = true;
+    windF = ctx.createBiquadFilter(); windF.type = 'bandpass'; windF.frequency.value = 500; windF.Q.value = 0.8;
+    wind = ctx.createGain(); wind.gain.value = 0;
+    n.connect(windF); windF.connect(wind); wind.connect(master); n.start();
   }
-  tag(a, a.textContent); tag(b, b.textContent);
-  function swap() { if (document.hidden) return; var x = a.textContent, y = b.textContent; morph(a, y, 1100); morph(b, x, 1100); }
-  setTimeout(function () { swap(); setInterval(swap, 9000); }, 5000);
+  function sm(a, b, x) { x = Math.min(1, Math.max(0, (x - a) / (b - a))); return x * x * (3 - 2 * x); }
+  function update() {
+    var max = document.documentElement.scrollHeight - innerHeight, p = max > 0 ? Math.min(1, scrollY / max) : 0, t = ctx.currentTime;
+    var jam = document.body.classList.contains('jam'), root = 55 - 6 * p;
+    drones.forEach(function (d) { d.o.frequency.setTargetAtTime(root * d.m * (jam ? 1 + (Math.random() - 0.5) * 0.08 : 1), t, jam ? 0.02 : 0.6); });
+    filt.frequency.setTargetAtTime(jam ? 300 + Math.random() * 2500 : 1600 - 1100 * p, t, 0.3);
+    shimmer.gain.setTargetAtTime(1 - sm(0.2, 0.7, p), t, 0.6);
+    wind.gain.setTargetAtTime(jam ? 0.25 * Math.random() : 0.18 * sm(0.6, 0.85, p) * (1 - sm(0.93, 1, p)), t, jam ? 0.03 : 0.5);
+    windF.frequency.setTargetAtTime(400 + 900 * sm(0.6, 0.95, p), t, 0.5);
+  }
+  function set(v) {
+    on = v; btn.setAttribute('aria-pressed', v);
+    if (v) {
+      if (!ctx) build();
+      ctx.resume(); update(); timer = setInterval(update, 120);
+      master.gain.cancelScheduledValues(ctx.currentTime); master.gain.setTargetAtTime(0.5, ctx.currentTime, 0.8);
+    } else if (ctx) {
+      clearInterval(timer); master.gain.cancelScheduledValues(ctx.currentTime); master.gain.setTargetAtTime(0, ctx.currentTime, 0.3);
+      setTimeout(function () { if (!on) ctx.suspend(); }, 1500);
+    }
+  }
+  btn.addEventListener('click', function () { set(!on); });
+  document.addEventListener('visibilitychange', function () { if (ctx && on) document.hidden ? ctx.suspend() : ctx.resume(); });
 })();
 
 // Rocket exhaust trail behind the cursor
