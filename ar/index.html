@@ -415,6 +415,12 @@ html[dir="rtl"] .fact { border-left: 0; border-right: 2px solid var(--sat-a); pa
 .book { justify-self: start; display: inline-flex; align-items: center; gap: 9px; padding: 11px 20px; border-radius: 999px; background: var(--accent); color: var(--bg); font-weight: 600; text-decoration: none; transition: transform 0.2s, box-shadow 0.2s; }
 .book:hover, .book:focus-visible { transform: translateY(-1px); box-shadow: 0 8px 22px color-mix(in srgb, var(--accent) 40%, transparent); }
 .book svg { width: 17px; height: 17px; stroke: currentColor; fill: none; stroke-width: 1.5; stroke-linecap: round; }
+.howi { margin-top: 30px; display: grid; gap: 14px; }
+.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; counter-reset: step; }
+.steps li { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 14px; counter-increment: step; }
+.steps li::before { content: "0" counter(step); grid-row: span 2; font: 500 0.8rem var(--font-mono); color: var(--accent); padding-top: 4px; }
+.steps b { font-weight: 600; }
+.steps span { color: var(--muted); font-size: 0.95rem; }
 .links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
 .links a { display: inline-flex; gap: 8px; align-items: center; padding: 9px 16px; border-radius: 999px; background: color-mix(in srgb, var(--bg) 12%, var(--ink)); text-decoration: none; font-weight: 500; }
 .links a:hover { background: var(--accent); color: var(--ink); }
@@ -929,6 +935,14 @@ html[dir="rtl"] .readout, html[dir="rtl"] .email { direction: ltr; }
           <li>نماذج أولية لتعلّم الآلة، بما فيها معالجة اللغة العربية</li>
           <li>أدوات Python والأتمتة وتطبيقات الويب الصغيرة</li>
         </ul>
+        <div class="howi">
+          <span class="label">طريقة عملي</span>
+          <ol class="steps">
+            <li><b>مكالمة مجانية لمدة 20 دقيقة</b><span>نناقش المشكلة والبيانات المتوفرة لديك والنتيجة التي تريدها.</span></li>
+            <li><b>نموذج أولي صغير</b><span>أجرّب الحل على بياناتك الحقيقية أولًا، لنتأكد معًا أنه ينجح قبل أن تلتزم بالمشروع.</span></li>
+            <li><b>التسليم</b><span>كود نظيف وموثّق مع جلسة شرح، ليتمكن فريقك من تشغيله دون الحاجة إليّ.</span></li>
+          </ol>
+        </div>
       </div>
       <div class="reach-col">
       <div class="reach">

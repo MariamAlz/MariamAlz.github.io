@@ -416,6 +416,12 @@ html[dir="rtl"] .fact { border-left: 0; border-right: 2px solid var(--sat-a); pa
 .book { justify-self: start; display: inline-flex; align-items: center; gap: 9px; padding: 11px 20px; border-radius: 999px; background: var(--accent); color: var(--bg); font-weight: 600; text-decoration: none; transition: transform 0.2s, box-shadow 0.2s; }
 .book:hover, .book:focus-visible { transform: translateY(-1px); box-shadow: 0 8px 22px color-mix(in srgb, var(--accent) 40%, transparent); }
 .book svg { width: 17px; height: 17px; stroke: currentColor; fill: none; stroke-width: 1.5; stroke-linecap: round; }
+.howi { margin-top: 30px; display: grid; gap: 14px; }
+.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; counter-reset: step; }
+.steps li { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 2px 14px; counter-increment: step; }
+.steps li::before { content: "0" counter(step); grid-row: span 2; font: 500 0.8rem var(--font-mono); color: var(--accent); padding-top: 4px; }
+.steps b { font-weight: 600; }
+.steps span { color: var(--muted); font-size: 0.95rem; }
 .links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
 .links a { display: inline-flex; gap: 8px; align-items: center; padding: 9px 16px; border-radius: 999px; background: color-mix(in srgb, var(--bg) 12%, var(--ink)); text-decoration: none; font-weight: 500; }
 .links a:hover { background: var(--accent); color: var(--ink); }
@@ -891,6 +897,14 @@ html[data-theme="light"] .theme-btn .moon { display: none; }
           <li>Machine learning prototypes, including Arabic NLP</li>
           <li>Python tools, automation and small web apps</li>
         </ul>
+        <div class="howi">
+          <span class="label">How I work</span>
+          <ol class="steps">
+            <li><b>A free 20-min call</b><span>We talk through the problem, the data you have and what done looks like.</span></li>
+            <li><b>A small prototype</b><span>I test the approach on your real data first, so we both know it works before you commit.</span></li>
+            <li><b>Delivery and handover</b><span>Clean, documented code and a walkthrough, so your team can run it without me.</span></li>
+          </ol>
+        </div>
       </div>
       <div class="reach-col">
       <div class="reach">
