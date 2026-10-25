@@ -133,6 +133,31 @@ h1, h2, .lede, .about .text, .focus p, .sec-head p { text-shadow: 0 1px 18px rgb
 }
 .hud b { color: var(--ink); font-weight: 500; }
 .hud .ph { color: var(--accent); }
+.hud.lost .ph { color: var(--sat-c); }
+.hud.lock .ph { color: var(--sat-b); }
+.jam-btn {
+  position: fixed; z-index: 4; right: max(16px, env(safe-area-inset-right, 0px)); bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+  display: inline-flex; align-items: center; gap: 8px; padding: 9px 14px; border-radius: 999px; border: 1px solid var(--line);
+  background: rgba(7, 10, 24, 0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  color: var(--muted); font: 500 0.72rem/1 var(--font-mono); letter-spacing: 0.04em; cursor: pointer; transition: color .2s, border-color .2s;
+}
+.jam-btn:hover, .jam-btn:focus-visible { color: var(--ink); border-color: var(--sat-c); }
+.jam-btn:disabled { cursor: default; color: var(--sat-c); border-color: var(--sat-c); }
+.jam-btn svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; }
+@media (max-width: 640px) { .jam-btn { padding: 7px 10px; font-size: 0.64rem; } }
+@media (prefers-reduced-motion: no-preference) {
+  body.jam::after { content: ""; position: fixed; inset: 0; z-index: 5; pointer-events: none; background: repeating-linear-gradient(0deg, rgba(240, 138, 179, 0.06) 0 1px, transparent 1px 3px); animation: jamScan 0.12s steps(2) infinite; }
+  body.jam h1, body.jam h2, body.jam .mark b { animation: jamGlitch 0.22s steps(2) infinite; }
+  body.jam main { animation: jamShake 0.3s steps(3) infinite; }
+  body.reacq h1, body.reacq h2 { animation: jamGlitch 0.6s steps(2) infinite; }
+}
+@keyframes jamScan { to { background-position: 0 3px; opacity: 0.6; } }
+@keyframes jamGlitch {
+  0% { text-shadow: -3px 0 var(--sat-c), 3px 0 var(--sat-b); transform: translate(1px, 0) skewX(-4deg); }
+  50% { text-shadow: 3px 0 var(--sat-a), -2px 0 var(--sat-c); transform: translate(-2px, 1px) skewX(3deg); }
+  100% { text-shadow: none; transform: none; }
+}
+@keyframes jamShake { 0% { transform: translate(0, 0); } 33% { transform: translate(-1px, 1px); } 66% { transform: translate(2px, -1px); } }
 @media (max-width: 640px) { .hud { font-size: 0.64rem; padding: 6px 9px; } .hud #sub, .hud span:last-child { display: none; } }
 main, footer { position: relative; }
 .track { display: block; width: 100%; height: 90px; color: var(--line); overflow: visible; }
@@ -383,6 +408,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
   <span class="ph" id="phase">MEO · GNSS orbit</span>
   <span>SUB <b id="sub">0.00° N 0.00° E</b></span>
 </div>
+<button class="jam-btn" id="jamBtn" type="button"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 9v5M5.5 6.5a3.5 3.5 0 0 1 5 0M3.5 4.5a6.3 6.3 0 0 1 9 0"/><circle cx="8" cy="8.5" r="1"/></svg><span id="jamTxt">Jam the signal</span></button>
 <main id="top">
   <section class="hero">
     <div class="wrap">
@@ -1300,17 +1326,59 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
     var max = document.documentElement.scrollHeight - innerHeight;
     prog = max > 0 ? Math.min(1, Math.max(0, scrollY / max)) : 0;
   }
+  // Signal mode: jam the GNSS signal, then watch the receiver reacquire a fix
+  var JAM = { lost: 2800, reacq: 5000, done: 6400 }, jam0 = -1, jamBtn = document.getElementById('jamBtn');
+  var JT = document.documentElement.lang === 'ar'
+    ? { km: ' كم', btn: 'شوّش الإشارة', lost: 'فُقدت الإشارة · لا تحديد', reacq: 'إعادة الالتقاط · %/4 أقمار', lock: 'تم تحديد الموقع ✓' }
+    : { km: ' km', btn: 'Jam the signal', lost: 'SIGNAL LOST · no fix', reacq: 'Reacquiring · %/4 sats', lock: 'FIX LOCKED · 3D ✓' };
+  function jamLevel(t) {
+    if (jam0 < 0) return 0;
+    var e = t - jam0;
+    if (e > JAM.done) {
+      jam0 = -1; document.body.classList.remove('jam', 'reacq'); hud.ph.parentNode.classList.remove('lost', 'lock');
+      jamBtn.disabled = false; return 0;
+    }
+    document.body.classList.toggle('jam', e < JAM.lost);
+    document.body.classList.toggle('reacq', e >= JAM.lost && e < JAM.reacq);
+    return e < JAM.lost ? 1 : e < JAM.reacq ? 1 - (e - JAM.lost) / (JAM.reacq - JAM.lost) : 0;
+  }
+  function jamHud(t) {
+    var e = t - jam0, box = hud.ph.parentNode, noise = function (n) { for (var s = '', i = 0; i < n; i++) s += '0123456789#%'[Math.random() * 12 | 0]; return s; };
+    box.classList.toggle('lost', e < JAM.reacq); box.classList.toggle('lock', e >= JAM.reacq);
+    if (e < JAM.lost) { hud.alt.textContent = noise(6) + JT.km; hud.ph.textContent = JT.lost; hud.sub.textContent = '--.--° -  --.--° -'; }
+    else if (e < JAM.reacq) hud.ph.textContent = JT.reacq.replace('%', Math.min(4, 1 + ((e - JAM.lost) / (JAM.reacq - JAM.lost) * 4 | 0)));
+    else hud.ph.textContent = JT.lock;
+  }
+  function jamFx(J) {
+    var cols = ['--sat-a', '--sat-b', '--sat-c'].map(css), n = 6 + (J * 14 | 0);
+    for (var i = 0; i < n; i++) {
+      g2.globalAlpha = 0.08 + Math.random() * 0.22 * J;
+      g2.fillStyle = cols[i % 3];
+      g2.fillRect(0, Math.random() * H, W, 1 + Math.random() * 6 * J);
+    }
+    g2.globalAlpha = 0.5 * J; g2.fillStyle = css('--ink');
+    for (i = 0; i < 260 * J; i++) g2.fillRect(Math.random() * W, Math.random() * H, 1.5, 1.5);
+    g2.globalAlpha = 1;
+  }
+  jamBtn.querySelector('span').textContent = JT.btn;
+  jamBtn.addEventListener('click', function () {
+    if (jam0 >= 0) return;
+    jam0 = performance.now(); jamBtn.disabled = true;
+    if (reduce) { var iv = setInterval(function () { var n = performance.now(); frame(n); if (jam0 < 0) { clearInterval(iv); frame(n); } }, 200); }
+  });
+
   function frame(t) {
     shown += (prog - shown) * (reduce ? 1 : 0.08);
-    var p = shown, c = cam(p, t);
+    var p = shown, c = cam(p, t), J = jamLevel(t);
     if (gl) {
       gl.viewport(0, 0, glc.width, glc.height); gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
       gl.uniform2f(gl.U.uRes, glc.width, glc.height); gl.uniform2f(gl.U.uOff, c.off[0], c.off[1]);
       gl.uniform1f(gl.U.uD, c.d); gl.uniform1f(gl.U.uRot, c.rot); gl.uniform1f(gl.U.uTilt, c.tilt);
-      gl.uniform1f(gl.U.uTime, t * 0.001); gl.uniform1f(gl.U.uP, p); gl.uniform1f(gl.U.uDim, 1 - 0.62 * sm(0.08, 0.22, p) + 0.12 * sm(0.9, 1, p)); gl.uniform1i(gl.U.uLand, 0);
+      gl.uniform1f(gl.U.uTime, t * 0.001); gl.uniform1f(gl.U.uP, p); gl.uniform1f(gl.U.uDim, (1 - 0.62 * sm(0.08, 0.22, p) + 0.12 * sm(0.9, 1, p)) * (J > 0.5 && !reduce ? 0.3 + Math.random() * 0.7 : 1)); gl.uniform1i(gl.U.uLand, 0);
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     }
     drawFx(t, p, c); hudUpdate(p, c);
+    if (jam0 >= 0) { if (J > 0 && !reduce) jamFx(J); jamHud(t); }
   }
   function sceneLoop(t) { frame(t); requestAnimationFrame(sceneLoop); }
   sizeScene(); readScroll(); shown = prog;
