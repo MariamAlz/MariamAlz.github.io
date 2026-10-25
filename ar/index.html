@@ -309,6 +309,31 @@ html[dir="rtl"] .fact { border-left: 0; border-right: 2px solid var(--sat-a); pa
 .offclock svg { width: 30px; height: 30px; stroke: var(--accent); fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
 .offclock h3 { font-size: 1.05rem; font-weight: 600; }
 .offclock p { color: var(--muted); font-size: 0.92rem; }
+.mlog { margin-top: 22px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); overflow: hidden; }
+.mlog-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 18px; border-bottom: 1px solid var(--line); font-family: var(--font-mono); font-size: var(--step--1); color: var(--muted); letter-spacing: 0.04em; }
+.mlog-bar b { color: var(--accent); font-weight: 600; }
+.mlog-rec { display: inline-flex; align-items: center; gap: 8px; }
+.mlog-rec::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--sat-c); box-shadow: 0 0 10px var(--sat-c); animation: mlogBlink 1.6s steps(2, start) infinite; }
+@keyframes mlogBlink { to { opacity: 0.2; } }
+.mlog-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media (max-width: 860px) { .mlog-grid { grid-template-columns: 1fr; } }
+.mlog-entry { padding: 20px 18px 22px; display: grid; gap: 10px; align-content: start; border-inline-start: 1px solid var(--line); }
+.mlog-entry:first-child { border-inline-start: 0; }
+@media (max-width: 860px) { .mlog-entry { border-inline-start: 0; border-top: 1px solid var(--line); } .mlog-entry:first-child { border-top: 0; } }
+.mlog-tag { font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.mlog-tag i { font-style: normal; color: var(--sat-b); }
+.mlog-entry h3 { font-family: var(--font-display); font-size: 1.15rem; font-weight: 600; line-height: 1.25; }
+.mlog-entry p { color: var(--muted); font-size: 0.92rem; }
+.mlog-wave { display: flex; align-items: flex-end; gap: 3px; height: 26px; }
+.mlog-wave span { width: 4px; border-radius: 2px; background: var(--sat-a); height: 30%; animation: mlogWave 1.1s ease-in-out infinite alternate; }
+.mlog-wave span:nth-child(3n) { background: var(--sat-b); animation-duration: 0.8s; }
+.mlog-wave span:nth-child(4n) { background: var(--accent); animation-duration: 1.4s; }
+@keyframes mlogWave { from { height: 18%; } to { height: 100%; } }
+.mlog-stars { color: var(--accent); letter-spacing: 0.2em; font-size: 0.95rem; }
+.mlog-stars span { color: var(--line); }
+.mlog-quote { font-family: var(--font-display); font-size: 1.15rem; line-height: 1.35; min-height: 5.6em; }
+.mlog-quote::after { content: "▍"; color: var(--accent); margin-inline-start: 2px; animation: mlogBlink 1s steps(2, start) infinite; }
+@media (prefers-reduced-motion: reduce) { .mlog-wave span, .mlog-rec::before, .mlog-quote::after { animation: none; } }
 
 /* contact */
 .contact { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 48px; align-items: start; }
@@ -330,6 +355,9 @@ footer { border-top: 1px solid var(--line); }
 footer a { text-decoration: none; color: var(--accent); }
 footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; padding-block: 28px 110px; color: var(--muted); }
 
+html[lang="ar"] .mlog-bar, html[lang="ar"] .mlog-tag { font-family: "IBM Plex Sans Arabic", sans-serif; letter-spacing: 0; text-transform: none; }
+html[lang="ar"] .mlog-quote { font-family: "Noto Kufi Arabic", sans-serif; font-size: 1.05rem; line-height: 1.7; min-height: 6.8em; }
+html[lang="ar"] .mlog-bar b { font-family: var(--font-mono); direction: ltr; unicode-bidi: isolate; }
 /* Arabic / right-to-left */
 html[lang="ar"] body { font-family: "IBM Plex Sans Arabic", var(--font-body); line-height: 1.8; }
 html[lang="ar"] h1, html[lang="ar"] h2, html[lang="ar"] h3, html[lang="ar"] .mark b, html[lang="ar"] .pubs b { font-family: "Noto Kufi Arabic", var(--font-display); letter-spacing: 0; line-height: 1.35; }
@@ -702,6 +730,27 @@ html[dir="rtl"] .readout, html[dir="rtl"] .email { direction: ltr; }
           <h3>تحسين الأشياء</h3><p>إن كان بالإمكان أن يعمل بشكل أفضل، فأريد أن أحاول.</p>
         </div>
       </div>
+      <div class="mlog" aria-label="سجل المهمة">
+        <div class="mlog-bar"><span class="mlog-rec">سجل المهمة</span><span>إدخال <b id="mlogDate">2026.10</b></span></div>
+        <div class="mlog-grid">
+          <div class="mlog-entry">
+            <span class="mlog-tag"><i>&#9679;</i> يُعزف الآن</span>
+            <div class="mlog-wave" aria-hidden="true"><span style="animation-delay:-0.00s"></span><span style="animation-delay:-0.13s"></span><span style="animation-delay:-0.26s"></span><span style="animation-delay:-0.39s"></span><span style="animation-delay:-0.52s"></span><span style="animation-delay:-0.65s"></span><span style="animation-delay:-0.78s"></span><span style="animation-delay:-0.91s"></span><span style="animation-delay:-1.04s"></span><span style="animation-delay:-1.17s"></span><span style="animation-delay:-1.30s"></span><span style="animation-delay:-1.43s"></span><span style="animation-delay:-1.56s"></span><span style="animation-delay:-1.69s"></span><span style="animation-delay:-1.82s"></span><span style="animation-delay:-1.95s"></span><span style="animation-delay:-2.08s"></span><span style="animation-delay:-2.21s"></span></div>
+            <h3>Andromeda</h3>
+            <p>Weyes Blood</p>
+          </div>
+          <div class="mlog-entry">
+            <span class="mlog-tag"><i>&#9679;</i> آخر فيلم شاهدته</span>
+            <div class="mlog-stars" aria-label="٤ من ٥">&#9733;&#9733;&#9733;&#9733;<span>&#9733;</span></div>
+            <h3>The Social Reckoning</h3>
+          </div>
+          <div class="mlog-entry">
+            <span class="mlog-tag"><i>&#9679;</i> فكرة تشغلني</span>
+            <p class="mlog-quote" id="mlogQuote" data-text="الكون هو كل ما كان، وكل ما هو كائن، وكل ما سيكون. ونعلم أننا نقترب من أعظم الألغاز.">الكون هو كل ما كان، وكل ما هو كائن، وكل ما سيكون. ونعلم أننا نقترب من أعظم الألغاز.</p>
+            <p>كارل ساغان</p>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -987,7 +1036,23 @@ html[dir="rtl"] .readout, html[dir="rtl"] .email { direction: ltr; }
     draw(0);
   })();
 
-  // Rocket exhaust trail behind the cursor
+  // Mission log: type out the current thought when it scrolls into view
+(function () {
+  var q = document.getElementById('mlogQuote');
+  var d = document.getElementById('mlogDate');
+  if (d) { var n = new Date(); d.textContent = n.getFullYear() + '.' + String(n.getMonth() + 1).padStart(2, '0') + '.' + String(n.getDate()).padStart(2, '0'); }
+  if (!q || window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) return;
+  var full = q.getAttribute('data-text'), started = false;
+  q.textContent = '';
+  new IntersectionObserver(function (es, ob) {
+    if (started || !es[0].isIntersecting) return;
+    started = true; ob.disconnect();
+    var i = 0;
+    (function step() { q.textContent = full.slice(0, ++i); if (i < full.length) setTimeout(step, 38); })();
+  }, { threshold: 0.6 }).observe(q);
+})();
+
+// Rocket exhaust trail behind the cursor
   (function () {
     if (reduce || !matchMedia('(pointer: fine)').matches) return;
     var tc = document.getElementById('trail'), tx = tc.getContext('2d'), parts = [], running = false, d = 1;
