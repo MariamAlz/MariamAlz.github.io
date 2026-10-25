@@ -920,6 +920,8 @@ html[data-theme="light"] .theme-btn .moon { display: none; }
           <a href="https://github.com/MariamAlz" target="_blank" rel="noopener">GitHub ↗</a>
           <a href="https://mariam-alzaabi.medium.com/" target="_blank" rel="noopener">Medium ↗</a>
           <a href="https://cv.mariamalzaabi.ae/" target="_blank" rel="noopener">CV ↗</a>
+          <a href="https://work.mariamalzaabi.ae/" target="_blank" rel="noopener">Work ↗</a>
+          <a href="https://lab.mariamalzaabi.ae/" target="_blank" rel="noopener">Lab ↗</a>
         </div>
       </div>
       <figure class="constel" id="constel" aria-hidden="true">
@@ -1529,7 +1531,10 @@ html[data-theme="light"] .theme-btn .moon { display: none; }
     ['⧉', 'Copy my email', 'انسخ بريدي', 1, function () { $('copy').click(); }, 'email mail بريد'],
     ['in', 'Open LinkedIn', 'افتح LinkedIn', 2, open('https://www.linkedin.com/in/mariam-mk-alzaabi/'), 'linkedin'],
     ['<>', 'Open GitHub', 'افتح GitHub', 2, open('https://github.com/MariamAlz'), 'github code'],
-    ['▤', 'Open my CV', 'افتح سيرتي الذاتية', 2, open('https://cv.mariamalzaabi.ae/'), 'cv resume pdf سيرة'],
+    ['▤', 'Open my CV', 'افتح سيرتي الذاتية', 2, open(ar ? 'https://cv.mariamalzaabi.ae/ar/' : 'https://cv.mariamalzaabi.ae/'), 'cv resume pdf سيرة'],
+    ['◩', 'See my work', 'شاهد أعمالي', 2, open(ar ? 'https://work.mariamalzaabi.ae/ar/' : 'https://work.mariamalzaabi.ae/'), 'work case studies portfolio projects أعمال مشاريع'],
+    ['⚗', 'Open the lab', 'افتح المختبر', 2, open('https://lab.mariamalzaabi.ae/'), 'lab experiments games wordle morse signal مختبر تجارب ألعاب'],
+    ['▦', 'Play Space Wordle', 'العب Space Wordle', 2, open('https://lab.mariamalzaabi.ae/space-wordle/'), 'wordle game daily word لعبة كلمة'],
     ['M', 'Open Medium', 'افتح Medium', 2, open('https://mariam-alzaabi.medium.com/'), 'medium blog'],
     ['ع', 'اقرأ الموقع بالعربية', 'Read in English', 1, function () { if (lang) location.href = lang.href; }, 'arabic english language لغة عربي'],
     ['↑', 'Back to orbit', 'العودة إلى المدار', 1, function () { scrollTo({ top: 0, behavior: 'smooth' }); }, 'top home البداية']
