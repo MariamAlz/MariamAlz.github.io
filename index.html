@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Mariam Alzaabi</title>
+<script>try { if (localStorage.getItem('theme') === 'light') document.documentElement.setAttribute('data-theme', 'light'); } catch (e) {}</script>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
@@ -169,7 +170,7 @@ h1, h2, .lede, .about .text, .focus p, .sec-head p { text-shadow: 0 1px 18px rgb
 .jam-btn:hover, .jam-btn:focus-visible { color: var(--ink); border-color: var(--sat-c); }
 .jam-btn:disabled { cursor: default; color: var(--sat-c); border-color: var(--sat-c); }
 .jam-btn svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 1.6; stroke-linecap: round; }
-@media (max-width: 640px) { .jam-btn { padding: 7px 10px; font-size: 0.64rem; } .snd-btn span, .cmd-btn span { display: none; } .dock { flex-wrap: wrap; justify-content: flex-end; max-width: 150px; } }
+@media (max-width: 640px) { .jam-btn { padding: 7px 10px; font-size: 0.64rem; } .snd-btn span, .cmd-btn span, .theme-btn span, .cmd-btn kbd { display: none; } .dock { flex-wrap: wrap; justify-content: flex-end; max-width: 150px; } }
 @media (prefers-reduced-motion: no-preference) {
   body.jam::after { content: ""; position: fixed; inset: 0; z-index: 5; pointer-events: none; background: repeating-linear-gradient(0deg, rgba(240, 138, 179, 0.06) 0 1px, transparent 1px 3px); animation: jamScan 0.12s steps(2) infinite; }
   body.jam h1, body.jam h2, body.jam .mark b { animation: jamGlitch 0.22s steps(2) infinite; }
@@ -466,6 +467,30 @@ kbd { font-family: "JetBrains Mono", monospace; font-size: 0.85em; padding: 1px 
 .cmd .empty { padding: 18px; color: var(--muted); text-align: center; }
 .cmd-foot { display: flex; gap: 14px; padding: 9px 16px; border-top: 1px solid var(--line); font-size: 0.68rem; color: var(--muted); }
 @media (hover: none) { .cmd-foot { display: none; } }
+/* optional light theme ("day side"), chosen with the dock toggle; dark stays the default */
+html[data-theme="light"] {
+  --bg: #EEF2F9;
+  --surface: rgba(255, 255, 255, 0.74);
+  --ink: #131A36;
+  --muted: #4E5677;
+  --line: rgba(40, 52, 110, 0.18);
+  --accent: #9A5B0C;
+  --accent-soft: rgba(154, 91, 12, 0.12);
+  --sat-a: #3552CC;
+  --sat-b: #0B7A69;
+  --sat-c: #A32A60;
+  color-scheme: light;
+}
+html[data-theme="light"] h1, html[data-theme="light"] h2, html[data-theme="light"] .lede, html[data-theme="light"] .about .text, html[data-theme="light"] .focus p, html[data-theme="light"] .sec-head p { text-shadow: 0 1px 18px rgba(238, 242, 249, 0.95); }
+html[data-theme="light"] .hud, html[data-theme="light"] .jam-btn { background: rgba(255, 255, 255, 0.72); }
+html[data-theme="light"] .nav nav a.lang:hover, html[data-theme="light"] .spacetag, html[data-theme="light"] .badge.win { color: #fff; }
+html[data-theme="light"] .cmd::backdrop { background: rgba(60, 70, 110, 0.35); }
+html[data-theme="light"] .cmd { box-shadow: 0 30px 80px rgba(20, 30, 70, 0.25); }
+/* the game board and photo labels stay dark screens in both themes */
+html[data-theme="light"] .board, html[data-theme="light"] .hz-l, html[data-theme="light"] .hz-r { --bg: #070A18; --ink: #EEF0FA; --muted: #A7ADCB; --line: rgba(120, 132, 190, 0.22); --accent: #E9B467; --sat-a: #84A0FF; --sat-b: #4FD3BD; --sat-c: #F08AB3; color: var(--ink); }
+.theme-btn .sun { display: none; }
+html[data-theme="light"] .theme-btn .sun { display: inline; }
+html[data-theme="light"] .theme-btn .moon { display: none; }
 </style>
 
 </head>
@@ -495,6 +520,7 @@ kbd { font-family: "JetBrains Mono", monospace; font-size: 0.85em; padding: 1px 
 </div>
 <div class="dock">
 <button class="jam-btn cmd-btn" id="cmdBtn" type="button" aria-label="Jump to a section" aria-keyshortcuts="/"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6"/><path d="M10.6 5.4l-1.6 3.6-3.6 1.6 1.6-3.6z"/></svg><span id="cmdTxt">Jump</span><kbd>/</kbd></button>
+<button class="jam-btn theme-btn" id="themeBtn" type="button" aria-pressed="false" aria-label="Light mode"><svg viewBox="0 0 16 16" aria-hidden="true"><path class="moon" d="M13 9.5A5.5 5.5 0 0 1 6.5 3a5.5 5.5 0 1 0 6.5 6.5z"/><g class="sun"><circle cx="8" cy="8" r="3"/><path d="M8 1.5v1.5M8 13v1.5M1.5 8H3M13 8h1.5M3.4 3.4l1 1M11.6 11.6l1 1M3.4 12.6l1-1M11.6 4.4l1-1"/></g></svg><span id="themeTxt">Light</span></button>
 <button class="jam-btn snd-btn" id="sndBtn" type="button" aria-pressed="false" aria-label="Ambient sound"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 6h2.5l3.5-3v10l-3.5-3H2.5z"/><path class="on" d="M11 5.5a3.5 3.5 0 0 1 0 5M12.8 3.8a6 6 0 0 1 0 8.4"/><path class="off" d="M11 6l4 4M15 6l-4 4"/></svg><span id="sndTxt">Sound</span></button>
 <button class="jam-btn" id="jamBtn" type="button"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 9v5M5.5 6.5a3.5 3.5 0 0 1 5 0M3.5 4.5a6.3 6.3 0 0 1 9 0"/><circle cx="8" cy="8.5" r="1"/></svg><span id="jamTxt">Jam the signal</span></button>
 </div>
@@ -1440,6 +1466,24 @@ kbd { font-family: "JetBrains Mono", monospace; font-size: 0.85em; padding: 1px 
   io.observe(fig);
 })();
 
+// Theme: dark night sky by default, optional light "day side", remembered on this device
+(function () {
+  var btn = document.getElementById('themeBtn'), root = document.documentElement, ar = root.lang === 'ar';
+  function sync() {
+    var light = root.getAttribute('data-theme') === 'light';
+    btn.setAttribute('aria-pressed', light ? 'true' : 'false');
+    btn.setAttribute('aria-label', ar ? 'الوضع الفاتح' : 'Light mode');
+    document.getElementById('themeTxt').textContent = ar ? (light ? 'داكن' : 'فاتح') : (light ? 'Dark' : 'Light');
+  }
+  btn.addEventListener('click', function () {
+    var light = root.getAttribute('data-theme') !== 'light';
+    if (light) root.setAttribute('data-theme', 'light'); else root.removeAttribute('data-theme');
+    try { localStorage.setItem('theme', light ? 'light' : 'dark'); } catch (e) {}
+    sync(); dispatchEvent(new Event('resize'));
+  });
+  sync();
+})();
+
 // Command palette: press / (or Ctrl/Cmd + K) to jump to a section or run something
 (function () {
   var dlg = document.getElementById('cmd');
@@ -1464,6 +1508,7 @@ kbd { font-family: "JetBrains Mono", monospace; font-size: 0.85em; padding: 1px 
     ['♪', 'Off the clock', 'خارج العمل', 0, go('offclock'), 'music film quote mission log موسيقى'],
     ['✉', 'Contact', 'تواصل', 0, go('contact'), 'email hire freelance بريد'],
     ['⌁', 'Jam the signal', 'شوّش الإشارة', 1, function () { $('jamBtn').click(); }, 'signal mode gnss تشويش'],
+    ['☀', 'Switch light or dark mode', 'التبديل بين الوضع الفاتح والداكن', 1, function () { $('themeBtn').click(); }, 'theme light dark day night فاتح داكن'],
     ['♫', 'Turn sound on or off', 'تشغيل الصوت أو إيقافه', 1, function () { $('sndBtn').click(); }, 'audio ambient music صوت'],
     ['◷', 'Book a 20-min call', 'احجز مكالمة لمدة 20 دقيقة', 2, open('https://cal.com/mariam-alzaabi-jat2hu/20-min-meeting'), 'cal calendar meeting schedule hire موعد اجتماع'],
     ['⧉', 'Copy my email', 'انسخ بريدي', 1, function () { $('copy').click(); }, 'email mail بريد'],
@@ -1682,7 +1727,7 @@ kbd { font-family: "JetBrains Mono", monospace; font-size: 0.85em; padding: 1px 
   var FS = [
     '#extension GL_OES_standard_derivatives : enable',
     'precision highp float;',
-    'uniform vec2 uRes;uniform vec2 uOff;uniform float uD,uRot,uTilt,uTime,uP,uDim;uniform sampler2D uLand;',
+    'uniform vec2 uRes;uniform vec2 uOff;uniform float uD,uRot,uTilt,uTime,uP,uDim,uLight;uniform sampler2D uLand;',
     'const float PI=3.14159265;const float F=1.6;',
     'float land(vec2 uv){return texture2D(uLand,uv).r;}',
     'void main(){',
@@ -1713,10 +1758,12 @@ kbd { font-family: "JetBrains Mono", monospace; font-size: 0.85em; padding: 1px 
     '  vec3 ocean=mix(vec3(.02,.03,.08),vec3(.05,.10,.24),day)*(.55+.45*diff);',
     '  vec3 dotc=mix(vec3(.55,.42,.24),vec3(.98,.78,.45),day);',
     '  col=ocean+dotc*lm*(.35+.65*day);',
+    '  vec3 lOcean=mix(vec3(.74,.81,.93),vec3(.86,.91,.98),day);vec3 lDot=mix(vec3(.42,.36,.30),vec3(.62,.40,.10),day);',
+    '  col=mix(col,mix(lOcean,lDot,lm*(.55+.45*day)),uLight);',
     '  float gx=abs(fract(lond/15.+.5)-.5)*15.,gy=abs(fract(latd/15.+.5)-.5)*15.;',
     '  float gw=fwidth(lond)*1.2+.0001;',
     '  float grid=(1.-smoothstep(0.,gw,gx))+(1.-smoothstep(0.,fwidth(latd)*1.2+.0001,gy));',
-    '  col+=vec3(.25,.35,.75)*min(grid,1.)*.12;',
+    '  col+=vec3(.25,.35,.75)*min(grid,1.)*.12*(1.-2.*uLight);',
     '  float fr=pow(1.-max(dot(n,-rd),0.),3.);',
     '  col+=vec3(.30,.48,1.)*fr*(.25+.75*day);',
     '  a=1.;',
@@ -1726,8 +1773,8 @@ kbd { font-family: "JetBrains Mono", monospace; font-size: 0.85em; padding: 1px 
     '  col=vec3(.30,.50,1.)*g*(.35+.65*tw);a=clamp(g,0.,1.);',
     ' }',
     ' float haze=smoothstep(.8,1.,uP);',
-    ' col=mix(col,vec3(.10,.18,.38),haze*.35*a);',
-    ' gl_FragColor=vec4(col*uDim,a);',
+    ' col=mix(col,mix(vec3(.10,.18,.38),vec3(.80,.86,.96),uLight),haze*.35*a);',
+    ' gl_FragColor=vec4(mix(col*uDim,mix(vec3(.933,.949,.976),col,uDim),uLight),a);',
     '}'
   ].join('\n');
 
@@ -1761,7 +1808,7 @@ kbd { font-family: "JetBrains Mono", monospace; font-size: 0.85em; padding: 1px 
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
     var al = gl.getAttribLocation(pr, 'a'); gl.enableVertexAttribArray(al); gl.vertexAttribPointer(al, 2, gl.FLOAT, false, 0, 0);
     gl.U = {};
-    ['uRes', 'uOff', 'uD', 'uRot', 'uTilt', 'uTime', 'uP', 'uDim', 'uLand'].forEach(function (n) { gl.U[n] = gl.getUniformLocation(pr, n); });
+    ['uRes', 'uOff', 'uD', 'uRot', 'uTilt', 'uTime', 'uP', 'uDim', 'uLight', 'uLand'].forEach(function (n) { gl.U[n] = gl.getUniformLocation(pr, n); });
     var tex = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, tex);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE, 1, 1, 0, gl.LUMINANCE, gl.UNSIGNED_BYTE, new Uint8Array([0]));
     var img = new Image();
@@ -1832,7 +1879,7 @@ kbd { font-family: "JetBrains Mono", monospace; font-size: 0.85em; padding: 1px 
   function drawFx(t, p, c) {
     g2.clearRect(0, 0, W, H);
     // stars drift as the camera turns, and fade as we enter the atmosphere
-    var fade = 1 - sm(0.72, 0.97, p), ink = css('--ink');
+    var fade = document.documentElement.getAttribute('data-theme') === 'light' ? 0 : 1 - sm(0.72, 0.97, p), ink = css('--ink');
     var dx = (c.rot * 80) % W, dy = p * H * 0.6;
     g2.fillStyle = ink;
     if (fade > 0) stars.forEach(function (s) {
@@ -1952,7 +1999,7 @@ kbd { font-family: "JetBrains Mono", monospace; font-size: 0.85em; padding: 1px 
       gl.viewport(0, 0, glc.width, glc.height); gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
       gl.uniform2f(gl.U.uRes, glc.width, glc.height); gl.uniform2f(gl.U.uOff, c.off[0], c.off[1]);
       gl.uniform1f(gl.U.uD, c.d); gl.uniform1f(gl.U.uRot, c.rot); gl.uniform1f(gl.U.uTilt, c.tilt);
-      gl.uniform1f(gl.U.uTime, t * 0.001); gl.uniform1f(gl.U.uP, p); gl.uniform1f(gl.U.uDim, (1 - 0.62 * sm(0.08, 0.22, p) + 0.12 * sm(0.9, 1, p)) * (J > 0.5 && !reduce ? 0.3 + Math.random() * 0.7 : 1)); gl.uniform1i(gl.U.uLand, 0);
+      gl.uniform1f(gl.U.uTime, t * 0.001); gl.uniform1f(gl.U.uP, p); gl.uniform1f(gl.U.uDim, (1 - 0.62 * sm(0.08, 0.22, p) + 0.12 * sm(0.9, 1, p)) * (J > 0.5 && !reduce ? 0.3 + Math.random() * 0.7 : 1)); gl.uniform1f(gl.U.uLight, document.documentElement.getAttribute('data-theme') === 'light' ? 1 : 0); gl.uniform1i(gl.U.uLand, 0);
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
     }
     drawFx(t, p, c); hudUpdate(p, c);
