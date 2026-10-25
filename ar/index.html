@@ -19,6 +19,7 @@
 <meta property="og:image:alt" content="مريم الزعابي مع عنوانها وخريطة أقمار ملاحة فوق الأرض">
 <meta property="og:locale" content="ar_AE">
 <meta name="twitter:card" content="summary_large_image">
+<script data-goatcounter="https://mariamalzaabi.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Reem+Kufi:wght@500;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=Noto+Kufi+Arabic:wght@600;800&display=swap">
@@ -538,8 +539,8 @@ html[dir="rtl"] .readout, html[dir="rtl"] .email { direction: ltr; }
       <div class="thesis">
         <div class="thesis-text">
           <p>تحت الماء يتشتت الضوء ويخفت بسرعة، فترى الكاميرات ضبابًا أزرق مخضرًا يصعّب الملاحة على الروبوتات. درّبتُ نماذج قائمة على شبكات GAN لإزالة الضبابية باستخدام بيانات تحت مائية، وبنيتها بالشبكات العصبية النبضية، وهي نماذج مستوحاة من الدماغ تعمل بكفاءة على العتاد العصبي الشكل. الهدف صور أوضح في الوقت الفعلي وباستهلاك منخفض للطاقة.</p>
-          <div class="haze" aria-label="اسحب عبر الصورة لمقارنة مشهد تحت الماء ضبابي بآخر واضح" role="img">
-            <canvas id="haze" width="640" height="300"></canvas>
+          <div class="haze">
+            <canvas id="haze" width="640" height="300" role="img" aria-label="اسحب عبر الصورة لمقارنة مشهد تحت الماء ضبابي بآخر واضح"></canvas>
             <input type="range" id="hazeSlider" min="0" max="100" value="55" aria-label="قارن بين الصورة الضبابية والواضحة">
             <span class="hz-l mono">ضبابية</span><span class="hz-r mono">واضحة</span>
           </div>
@@ -876,6 +877,12 @@ html[dir="rtl"] .readout, html[dir="rtl"] .email { direction: ltr; }
     try { navigator.clipboard.writeText(text).then(done, fallback); } catch (e) { fallback(); }
   });
 
+  // run fn once the page has loaded and the browser is idle, so animations don't slow the first paint
+  function whenIdle(fn) {
+    var go = function () { (window.requestIdleCallback || function (f) { setTimeout(f, 200); })(fn, { timeout: 1500 }); };
+    if (document.readyState === 'complete') go(); else addEventListener('load', go);
+  }
+
   // GNSS sky plot: azimuth/elevation polar view, zenith at centre
   var cv = document.getElementById('sky');
   var ctx = cv.getContext('2d');
@@ -993,9 +1000,14 @@ html[dir="rtl"] .readout, html[dir="rtl"] .email { direction: ltr; }
     document.querySelector('.sky').setAttribute('aria-label', ar ? 'خريطة حيّة لأقمار الملاحة فوق أبوظبي الآن، وصورة مريم في المنتصف' : 'A live sky plot of the GPS, Galileo and BeiDou satellites above Abu Dhabi right now, with Mariam\'s photo at the centre');
   }).catch(function () {});
 
-  function loop(t) { draw(t); if (!reduce) requestAnimationFrame(loop); }
+  // only animate while the sky plot is on screen, and start after the page has loaded
+  var skyOn = true, skyRun = false;
+  function loop(t) { draw(t); if (!reduce && skyOn) requestAnimationFrame(loop); else skyRun = false; }
+  function startSky() { if (!reduce && skyOn && !skyRun) { skyRun = true; requestAnimationFrame(loop); } }
   resize(); window.addEventListener('resize', function () { resize(); trails.forEach(function (x) { x.length = 0; }); draw(performance.now()); });
-  requestAnimationFrame(loop);
+  draw(performance.now());
+  if ('IntersectionObserver' in window) new IntersectionObserver(function (es) { skyOn = es[0].isIntersecting; startSky(); }).observe(cv);
+  whenIdle(startSky);
 
   // Thesis illustration: hazy vs dehazed underwater scene, drawn procedurally
   (function () {
@@ -1496,9 +1508,13 @@ html[dir="rtl"] .readout, html[dir="rtl"] .email { direction: ltr; }
     return true;
   }
 
+  // the Earth shader is the heaviest part, so it renders below screen resolution and drops further on slow devices
+  var glScale = innerWidth < 700 ? 0.75 : 1, slow = 0, lastT = 0;
+  function sizeGL() { glc.width = Math.round(W * DPR * glScale); glc.height = Math.round(H * DPR * glScale); }
   function sizeScene() {
     DPR = Math.min(window.devicePixelRatio || 1, 1.5); W = innerWidth; H = innerHeight;
-    [glc, fx].forEach(function (c) { c.width = Math.round(W * DPR); c.height = Math.round(H * DPR); });
+    fx.width = Math.round(W * DPR); fx.height = Math.round(H * DPR);
+    sizeGL();
     g2.setTransform(DPR, 0, 0, DPR, 0, 0);
     stars = []; var n = Math.round(W * H / 3600);
     for (var i = 0; i < n; i++) stars.push([Math.random(), Math.random(), Math.random() * 1.3 + 0.3, Math.random() * 6.28, Math.random() * 0.6 + 0.4]);
@@ -1602,12 +1618,13 @@ html[dir="rtl"] .readout, html[dir="rtl"] .email { direction: ltr; }
     g2.globalAlpha = 1;
   }
 
+  function setText(el, v) { if (el.textContent !== v) el.textContent = v; }
   function hudUpdate(p, c) {
     var alt = Math.round(20200 * Math.pow(1 - p, 2.2));
-    hud.alt.textContent = alt.toLocaleString('en-US') + ' كم';
-    hud.ph.textContent = alt > 2000 ? 'MEO · مدار الملاحة' : alt > 160 ? 'LEO · مدار أرضي منخفض' : alt > 100 ? 'خط كارمان أمامنا' : alt > 2 ? 'الغلاف الجوي · هبوط' : 'الهبوط · أبوظبي';
+    setText(hud.alt, alt.toLocaleString('en-US') + ' كم');
+    setText(hud.ph, alt > 2000 ? 'MEO · مدار الملاحة' : alt > 160 ? 'LEO · مدار أرضي منخفض' : alt > 100 ? 'خط كارمان أمامنا' : alt > 2 ? 'الغلاف الجوي · هبوط' : 'الهبوط · أبوظبي');
     var lat = c.tilt / D2R, lon = ((c.rot / D2R + 540) % 360) - 180;
-    hud.sub.textContent = Math.abs(lat).toFixed(2) + '° ' + (lat >= 0 ? 'N' : 'S') + ' ' + Math.abs(lon).toFixed(2) + '° ' + (lon >= 0 ? 'E' : 'W');
+    setText(hud.sub, Math.abs(lat).toFixed(2) + '° ' + (lat >= 0 ? 'N' : 'S') + ' ' + Math.abs(lon).toFixed(2) + '° ' + (lon >= 0 ? 'E' : 'W'));
   }
 
   function readScroll() {
@@ -1668,12 +1685,17 @@ html[dir="rtl"] .readout, html[dir="rtl"] .email { direction: ltr; }
     drawFx(t, p, c); hudUpdate(p, c);
     if (jam0 >= 0) { if (J > 0 && !reduce) jamFx(J); jamHud(t); }
   }
-  function sceneLoop(t) { frame(t); requestAnimationFrame(sceneLoop); }
+  function sceneLoop(t) {
+    // after ~1.5 s spent on frames slower than 30 fps, render the Earth at lower resolution (twice at most)
+    if (lastT && glScale > 0.45) { var dt = Math.min(t - lastT, 250); slow = dt > 34 ? slow + dt : Math.max(0, slow - dt); if (slow > 1500) { glScale *= 0.7; sizeGL(); slow = 0; } }
+    lastT = t; frame(t); requestAnimationFrame(sceneLoop);
+  }
   sizeScene(); readScroll(); shown = prog;
   if (!initGL()) glc.hidden = true;
   addEventListener('resize', function () { sizeScene(); readScroll(); if (reduce) frame(performance.now()); });
   addEventListener('scroll', function () { readScroll(); if (reduce) frame(performance.now()); }, { passive: true });
-  if (reduce) frame(performance.now()); else requestAnimationFrame(sceneLoop);
+  frame(performance.now());
+  if (!reduce) whenIdle(function () { requestAnimationFrame(sceneLoop); });
 })();
 </script>
 </body>
