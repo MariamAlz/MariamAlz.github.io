@@ -405,6 +405,9 @@ html[dir="rtl"] .fact { border-left: 0; border-right: 2px solid var(--sat-a); pa
 .services li::before { content: "◎"; color: var(--accent); }
 .reach { display: grid; gap: 12px; padding: 24px; border-radius: var(--radius); background: var(--ink); color: var(--bg); }
 .reach .label { color: color-mix(in srgb, var(--bg) 70%, var(--ink)); }
+.localtime { margin: 0; font-size: 0.8rem; color: color-mix(in srgb, var(--bg) 60%, var(--ink)); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.localtime i { font-style: normal; }
+.localtime b { font-weight: 500; color: inherit; }
 .email-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
 .email { font-family: var(--font-mono); font-size: 1rem; word-break: break-all; user-select: all; color: inherit; text-decoration: none; }
 .email:hover, .email:focus-visible { text-decoration: underline; text-underline-offset: 3px; }
@@ -816,6 +819,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
       </div>
       <div class="reach">
         <span class="label">Get in touch</span>
+        <p class="localtime mono" id="localtime" hidden></p>
         <div class="email-row">
           <a class="email" id="email" href="mailto:mariam@mariamalzaabi.ae">mariam@mariamalzaabi.ae</a>
           <button class="copy" id="copy" type="button">Copy</button>
@@ -1258,7 +1262,29 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
     draw(0);
   })();
 
-  // Writing: latest Medium posts, saved daily to assets/medium.json by a GitHub Action
+  // Contact: Mariam's local time in Abu Dhabi, and how far ahead or behind the visitor it is
+(function () {
+  var el = document.getElementById('localtime');
+  if (!el || !window.Intl) return;
+  var ar = document.documentElement.lang === 'ar';
+  function tick() {
+    var now = new Date(), t = now.toLocaleTimeString(ar ? 'ar-AE-u-nu-latn' : 'en-US', { timeZone: 'Asia/Dubai', hour: 'numeric', minute: '2-digit' });
+    var h = +now.toLocaleString('en-US', { timeZone: 'Asia/Dubai', hour: 'numeric', hour12: false }) % 24, day = h >= 6 && h < 19;
+    var diff = (240 + now.getTimezoneOffset()) / 60, n = Math.abs(diff), rel;
+    if (!diff) rel = ar ? 'نفس توقيتك' : 'same time as you';
+    else if (ar) rel = (diff > 0 ? 'متقدّمة عنك ' : 'متأخرة عنك ') + n + (n === 1 ? ' ساعة' : n === 2 ? ' ساعتين' : ' ساعات');
+    else rel = n + (n === 1 ? ' hour ' : ' hours ') + (diff > 0 ? 'ahead of you' : 'behind you');
+    el.innerHTML = '';
+    var i = document.createElement('i'); i.setAttribute('aria-hidden', 'true'); i.textContent = day ? '☀' : '☾';
+    var b = document.createElement('b'); b.textContent = t;
+    el.appendChild(i); el.appendChild(b);
+    el.appendChild(document.createTextNode(ar ? ' في أبوظبي · ' + rel : ' in Abu Dhabi · ' + rel));
+    el.hidden = false;
+  }
+  tick(); setInterval(tick, 30000);
+})();
+
+// Writing: latest Medium posts, saved daily to assets/medium.json by a GitHub Action
 (function () {
   var box = document.getElementById('posts'), sec = document.getElementById('writing');
   if (!box || !window.fetch) return;
