@@ -44,7 +44,7 @@ def main():
     for prefix, group in GROUPS.items():
         for o in fetch(group):
             sats.append({
-                "id": label(prefix, o["OBJECT_NAME"], o["NORAD_CAT_ID"]),
+                "id": label(prefix, o["OBJECT_NAME"], o["NORAD_CAT_ID"]), "c": prefix,
                 "epoch": o["EPOCH"] + "Z",
                 "n": o["MEAN_MOTION"], "e": o["ECCENTRICITY"], "i": o["INCLINATION"],
                 "raan": o["RA_OF_ASC_NODE"], "argp": o["ARG_OF_PERICENTER"], "ma": o["MEAN_ANOMALY"],
@@ -52,8 +52,6 @@ def main():
     if len(sats) < 30:
         raise SystemExit("Only %d satellites returned, keeping the old file" % len(sats))
     sats.sort(key=lambda s: s["id"])
-    for s in sats:
-        s["c"] = s["id"][0] if s["id"][0] in "GEC" else "E"
     out = {"updated": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"), "sats": sats}
     with open("assets/gnss.json", "w", encoding="utf-8") as f:
         json.dump(out, f, separators=(",", ":"))
