@@ -1,0 +1,27 @@
+name: Medium posts
+
+on:
+  schedule:
+    - cron: "41 3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency: medium-posts
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/medium_posts.py
+      - name: Commit if changed
+        run: |
+          git diff --quiet assets/medium.json 2>/dev/null && git ls-files --error-unmatch assets/medium.json >/dev/null 2>&1 && exit 0
+          git config user.name "medium bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/medium.json
+          git commit -m "Update Medium posts"
+          git pull --rebase origin main
+          git push
