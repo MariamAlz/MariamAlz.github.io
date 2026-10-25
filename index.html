@@ -80,6 +80,8 @@ header.nav {
 .mark span { font-family: var(--font-ar); color: var(--accent); font-size: 1.05rem; }
 .mark .nm-ar { font-family: var(--font-ar) !important; letter-spacing: 0; }
 .mark .nm-en { font-family: var(--font-display) !important; }
+.mark b, .mark span { white-space: nowrap; }
+@media (max-width: 640px) { .mark span { display: none; } }
 .mark span.nm-ar { font-size: 1.1rem !important; }
 .nav nav { display: flex; gap: 22px; flex-wrap: wrap; }
 .nav nav a { text-decoration: none; color: var(--muted); font-weight: 500; font-size: 0.95rem; }
@@ -104,7 +106,7 @@ header.nav {
 @media (max-width: 860px) { .hero .wrap { grid-template-columns: 1fr; gap: 28px; padding-block: 40px; } }
 .hero-copy { display: grid; gap: 22px; min-width: 0; }
 .ar-name { justify-self: start; font-family: var(--font-ar); font-weight: 700; font-size: var(--step-2); color: var(--accent); line-height: 1.3; }
-.hero h1 { font-size: var(--step-4); font-weight: 800; letter-spacing: -0.035em; }
+.hero h1 { font-size: clamp(2.4rem, 5.6vw, 4.2rem); font-weight: 800; letter-spacing: -0.035em; }
 .hero h1 em { font-style: normal; color: var(--accent); }
 .lede { font-size: var(--step-1); color: var(--muted); max-width: 34ch; line-height: 1.5; }
 .lede strong { color: var(--ink); font-weight: 600; }
@@ -416,7 +418,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
   <section class="hero">
     <div class="wrap">
       <div class="hero-copy">
-        <h1>Engineering things that know <em>where</em> they are.</h1>
+        <h1>Engineering things that know <em>where</em> they are, and understand <em>what</em> they see.</h1>
         <p class="lede">I'm Mariam, an <strong>Emirati software engineer</strong> in Abu Dhabi. I build algorithms in signal processing, AI and <strong>GNSS</strong>, and I like turning hard problems into clean, working code.</p>
         <span class="status"><i></i>Open to freelance projects</span>
         <div class="ctas">

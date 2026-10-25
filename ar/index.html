@@ -80,6 +80,8 @@ header.nav {
 .mark span { font-family: var(--font-ar); color: var(--accent); font-size: 1.05rem; }
 .mark .nm-ar { font-family: var(--font-ar) !important; letter-spacing: 0; }
 .mark .nm-en { font-family: var(--font-display) !important; }
+.mark b, .mark span { white-space: nowrap; }
+@media (max-width: 640px) { .mark span { display: none; } }
 .mark span.nm-ar { font-size: 1.1rem !important; }
 .nav nav { display: flex; gap: 22px; flex-wrap: wrap; }
 .nav nav a { text-decoration: none; color: var(--muted); font-weight: 500; font-size: 0.95rem; }
@@ -104,7 +106,7 @@ header.nav {
 @media (max-width: 860px) { .hero .wrap { grid-template-columns: 1fr; gap: 28px; padding-block: 40px; } }
 .hero-copy { display: grid; gap: 22px; min-width: 0; }
 .ar-name { justify-self: start; font-family: var(--font-ar); font-weight: 700; font-size: var(--step-2); color: var(--accent); line-height: 1.3; }
-.hero h1 { font-size: var(--step-4); font-weight: 800; letter-spacing: -0.035em; }
+.hero h1 { font-size: clamp(2.4rem, 5.6vw, 4.2rem); font-weight: 800; letter-spacing: -0.035em; }
 .hero h1 em { font-style: normal; color: var(--accent); }
 .lede { font-size: var(--step-1); color: var(--muted); max-width: 34ch; line-height: 1.5; }
 .lede strong { color: var(--ink); font-weight: 600; }
@@ -393,7 +395,7 @@ html[lang="ar"] .mlog-bar b { font-family: var(--font-mono); direction: ltr; uni
 html[lang="ar"] body { font-family: "IBM Plex Sans Arabic", var(--font-body); line-height: 1.8; }
 html[lang="ar"] h1, html[lang="ar"] h2, html[lang="ar"] h3, html[lang="ar"] .mark b, html[lang="ar"] .pubs b { font-family: "Noto Kufi Arabic", var(--font-display); letter-spacing: 0; line-height: 1.35; }
 html[lang="ar"] .pubs b { font-family: var(--font-display); direction: ltr; text-align: right; unicode-bidi: plaintext; }
-html[lang="ar"] .hero h1 { letter-spacing: 0; line-height: 1.25; font-size: clamp(2.4rem, 7vw, 4.6rem); }
+html[lang="ar"] .hero h1 { letter-spacing: 0; line-height: 1.3; font-size: clamp(2.1rem, 5.6vw, 3.8rem); }
 html[lang="ar"] .label, html[lang="ar"] .mono, html[lang="ar"] .badge, html[lang="ar"] .prn, html[lang="ar"] .band { letter-spacing: 0; text-transform: none; }
 html[lang="ar"] .label, html[lang="ar"] .badge, html[lang="ar"] .card .prn, html[lang="ar"] .band, html[lang="ar"] .log .when, html[lang="ar"] .spacetag, html[lang="ar"] footer .mono { font-family: "IBM Plex Sans Arabic", var(--font-mono); font-size: 0.8rem; }
 html[lang="ar"] .mark span { font-family: var(--font-display); font-size: 0.95rem; color: var(--accent); }
@@ -451,7 +453,7 @@ html[dir="rtl"] .readout, html[dir="rtl"] .email { direction: ltr; }
   <section class="hero">
     <div class="wrap">
       <div class="hero-copy">
-        <h1>أبني تقنيات تعرف <em>أين</em> هي.</h1>
+        <h1>أبني تقنيات تعرف <em>أين</em> هي، وتفهم <em>ما</em> تراه.</h1>
         <p class="lede">أنا مريم، <strong>مهندسة برمجيات إماراتية</strong> في أبوظبي. أطوّر خوارزميات في معالجة الإشارات والذكاء الاصطناعي و<strong>الملاحة بالأقمار الصناعية</strong>، وأحب تحويل المشكلات الصعبة إلى برمجيات نظيفة تعمل.</p>
         <span class="status"><i></i>متاحة لمشاريع العمل الحر</span>
         <div class="ctas">
