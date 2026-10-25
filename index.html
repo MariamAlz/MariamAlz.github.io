@@ -103,7 +103,8 @@ header.nav {
 .nav nav { display: flex; gap: 22px; flex-wrap: wrap; }
 .nav nav a { text-decoration: none; color: var(--muted); font-weight: 500; font-size: 0.95rem; }
 .nav nav a:hover { color: var(--ink); }
-@media (max-width: 640px) { .nav nav a:not(.keep) { display: none; } }
+@media (max-width: 640px) { .nav nav a:not(.keep) { display: none; } .nav nav { gap: 14px; flex-wrap: nowrap; align-items: center; } }
+@media (max-width: 400px) { .nav nav { gap: 10px; } .nav nav a { font-size: 0.86rem; } .nav nav a.lang { padding: 2px 9px; } }
 
 .nav nav a.lang { color: var(--accent); border: 1px solid color-mix(in srgb, var(--accent) 50%, transparent); padding: 2px 12px; border-radius: 999px; }
 .nav nav a.lang:hover { background: var(--accent); color: #1a1205; }
@@ -510,6 +511,7 @@ html[data-theme="light"] .theme-btn .moon { display: none; }
       <a href="#play">Play</a>
       <a href="#projects">Projects</a>
       <a href="#journey">Journey</a>
+      <a class="keep" href="https://lab.mariamalzaabi.ae/">Lab ↗</a>
       <a class="keep" href="#contact">Contact</a>
       <a class="keep lang" href="ar/" lang="ar" hreflang="ar">عربي</a>
     </nav>
