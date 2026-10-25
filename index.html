@@ -919,6 +919,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
     if (reduce) draw(performance.now());
   }
   function drawLive(R, cols, muted) {
+    var placed = [];
     live.forEach(function (s) {
       var col = cols[s.c], tr = s.track, now = tr[tr.length - 1];
       ctx.strokeStyle = col; ctx.lineWidth = 1.5;
@@ -931,6 +932,9 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
       if (now[1] < MASK) return;
       var p = pos(now[0], now[1], R);
       ctx.fillStyle = col; ctx.beginPath(); ctx.arc(p[0], p[1], 4.5, 0, Math.PI * 2); ctx.fill();
+      // skip labels that would overlap one already drawn
+      if (placed.some(function (q) { return Math.abs(q[0] - p[0]) < 30 && Math.abs(q[1] - p[1]) < 13; })) return;
+      placed.push(p);
       ctx.fillStyle = muted; ctx.fillText(s.id, p[0] + 8, p[1] - 8);
     });
   }
