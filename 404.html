@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Signal lost · Mariam Alzaabi</title>
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Instrument+Sans:wght@400;500&family=JetBrains+Mono:wght@500&family=Noto+Kufi+Arabic:wght@700&family=IBM+Plex+Sans+Arabic:wght@400;500&display=swap">
+<style>
+:root { --bg: #070A18; --ink: #EEF0FA; --muted: #A7ADCB; --line: rgba(120, 132, 190, 0.22); --accent: #E9B467; --sat-a: #84A0FF; --sat-b: #4FD3BD; --sat-c: #F08AB3; }
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body { background: var(--bg); color: var(--ink); font-family: "Instrument Sans", system-ui, sans-serif; display: grid; place-items: center; padding: 24px 16px; overflow: hidden; }
+canvas { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; }
+main { position: relative; z-index: 1; max-width: 520px; text-align: center; display: grid; gap: 18px; justify-items: center; }
+.code { font: 500 0.8rem "JetBrains Mono", monospace; letter-spacing: 0.12em; color: var(--sat-c); padding: 4px 10px; border: 1px solid currentColor; border-radius: 6px; }
+.code::before { content: "● "; animation: blink 1.2s steps(2, start) infinite; }
+h1 { margin: 0; font: 800 clamp(2.2rem, 7vw, 3.6rem)/1.05 "Bricolage Grotesque", sans-serif; letter-spacing: -0.03em; }
+h1 em { font-style: normal; color: var(--accent); }
+p { margin: 0; color: var(--muted); font-size: 1.05rem; line-height: 1.6; }
+.hud { font: 500 0.78rem "JetBrains Mono", monospace; color: var(--muted); }
+.hud b { color: var(--ink); font-weight: 500; }
+a.btn { display: inline-block; margin-top: 6px; padding: 12px 22px; border-radius: 999px; background: var(--ink); color: var(--bg); font-weight: 500; text-decoration: none; }
+a.btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+html[lang="ar"] body { font-family: "IBM Plex Sans Arabic", sans-serif; }
+html[lang="ar"] .code, html[lang="ar"] .hud { font-family: "IBM Plex Sans Arabic", sans-serif; letter-spacing: 0; }
+html[lang="ar"] h1 { font-family: "Noto Kufi Arabic", sans-serif; letter-spacing: 0; line-height: 1.4; }
+@keyframes blink { to { opacity: 0.2; } }
+@media (prefers-reduced-motion: reduce) { .code::before { animation: none; } }
+</style>
+</head>
+<body>
+<canvas id="c" aria-hidden="true"></canvas>
+<main>
+  <span class="code" id="code">404 · NO FIX</span>
+  <h1 id="h">Signal lost. This page is <em>nowhere</em> to be found.</h1>
+  <p id="p">The receiver searched every satellite in view and couldn't lock on to this address. It may have moved, or the link has a typo.</p>
+  <span class="hud" id="hud">SEARCHING · SATS <b id="n">0</b>/4</span>
+  <a class="btn" id="home" href="/">Back to Earth</a>
+</main>
+<script>
+(function () {
+  var ar = /^\/ar(\/|$)/.test(location.pathname);
+  if (ar) {
+    document.documentElement.lang = 'ar'; document.documentElement.dir = 'rtl';
+    document.title = 'فُقدت الإشارة · مريم الزعابي';
+    document.getElementById('code').textContent = '404 · لا تحديد';
+    document.getElementById('h').innerHTML = 'فُقدت الإشارة. هذه الصفحة <em>غير موجودة</em>.';
+    document.getElementById('p').textContent = 'بحث المستقبِل في كل الأقمار الظاهرة ولم يتمكن من تحديد هذا العنوان. ربما نُقلت الصفحة، أو في الرابط خطأ.';
+    document.getElementById('hud').innerHTML = 'جارٍ البحث · الأقمار <b id="n">0</b>/4';
+    var a = document.getElementById('home'); a.textContent = 'العودة إلى الأرض'; a.href = '/ar/';
+  }
+  var cv = document.getElementById('c'), g = cv.getContext('2d'), W, H, D;
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var sats = [], cols = ['#84A0FF', '#4FD3BD', '#F08AB3'], ids = ['G07', 'E11', 'C19', 'G21', 'E24', 'C36', 'G12', 'E33'];
+  for (var i = 0; i < 8; i++) sats.push({ a: Math.random() * 6.28, r: 0.25 + Math.random() * 0.2, s: (Math.random() < 0.5 ? -1 : 1) * (0.00004 + Math.random() * 0.00006), id: ids[i], c: cols[i % 3] });
+  function size() { D = Math.min(devicePixelRatio || 1, 2); W = innerWidth; H = innerHeight; cv.width = W * D; cv.height = H * D; g.setTransform(D, 0, 0, D, 0, 0); }
+  function draw(t) {
+    g.clearRect(0, 0, W, H);
+    var cx = W / 2, cy = H / 2, R = Math.max(W, H) * 0.55;
+    g.strokeStyle = 'rgba(120,132,190,0.18)'; g.lineWidth = 1;
+    [0.2, 0.32, 0.44].forEach(function (k) { g.beginPath(); g.arc(cx, cy, R * k, 0, 6.28); g.stroke(); });
+    // radar sweep that never finds a lock
+    var sw = reduce ? 0.8 : t * 0.0012;
+    var grd = g.createConicGradient ? g.createConicGradient(sw, cx, cy) : null;
+    if (grd) { grd.addColorStop(0, 'rgba(79,211,189,0.18)'); grd.addColorStop(0.08, 'rgba(79,211,189,0)'); grd.addColorStop(1, 'rgba(79,211,189,0)'); g.fillStyle = grd; g.beginPath(); g.arc(cx, cy, R * 0.44, 0, 6.28); g.fill(); }
+    g.font = '500 11px "JetBrains Mono", monospace';
+    sats.forEach(function (s, i) {
+      var a = s.a + (reduce ? 0 : s.s * t), x = cx + Math.cos(a) * R * s.r * 1.6, y = cy + Math.sin(a) * R * s.r;
+      var flick = reduce ? 0.5 : 0.25 + 0.75 * Math.abs(Math.sin(t * 0.002 + i * 1.7));
+      g.globalAlpha = flick; g.fillStyle = s.c; g.beginPath(); g.arc(x, y, 4, 0, 6.28); g.fill();
+      g.fillStyle = '#A7ADCB'; g.fillText(s.id, x + 8, y - 8); g.globalAlpha = 1;
+    });
+    var n = document.getElementById('n'); if (n) n.textContent = reduce ? 3 : Math.floor(t / 900) % 4;
+    if (!reduce) requestAnimationFrame(draw);
+  }
+  size(); addEventListener('resize', size); requestAnimationFrame(draw);
+})();
+</script>
+</body>
+</html>
