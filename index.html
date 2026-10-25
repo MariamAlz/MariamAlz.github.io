@@ -888,7 +888,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
   }
   // Live sky: real GPS, Galileo and BeiDou positions over Abu Dhabi, from orbital elements
   // that a daily GitHub Action saves to assets/gnss.json (falls back to the illustration above)
-  var live = null, MU = 398600.4418, RE = 6378.137, J2 = 1.08263e-3, D2R = Math.PI / 180;
+  var live = null, MASK = 10, MU = 398600.4418, RE = 6378.137, J2 = 1.08263e-3, D2R = Math.PI / 180;
   var OBS = (function (lat, lon) {
     var f = 1 / 298.257223563, e2 = f * (2 - f), sl = Math.sin(lat * D2R), cl = Math.cos(lat * D2R), so = Math.sin(lon * D2R), co = Math.cos(lon * D2R);
     var N = RE / Math.sqrt(1 - e2 * sl * sl);
@@ -913,7 +913,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
     live.forEach(function (s) {
       s.track = [];
       for (var m = 60; m >= 0; m -= 4) s.track.push(azel(s, now - m * 60000));
-      if (s.track[s.track.length - 1][1] > 0) seen++;
+      if (s.track[s.track.length - 1][1] > MASK) seen++;
     });
     document.getElementById('satcount').textContent = seen;
     if (reduce) draw(performance.now());
@@ -923,12 +923,12 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
       var col = cols[s.c], tr = s.track, now = tr[tr.length - 1];
       ctx.strokeStyle = col; ctx.lineWidth = 1.5;
       for (var k = 1; k < tr.length; k++) {
-        if (tr[k][1] < 0 || tr[k - 1][1] < 0) continue;
+        if (tr[k][1] < MASK || tr[k - 1][1] < MASK) continue;
         var p0 = pos(tr[k - 1][0], tr[k - 1][1], R), p1 = pos(tr[k][0], tr[k][1], R);
         ctx.globalAlpha = k / tr.length * 0.5; ctx.beginPath(); ctx.moveTo(p0[0], p0[1]); ctx.lineTo(p1[0], p1[1]); ctx.stroke();
       }
       ctx.globalAlpha = 1;
-      if (now[1] < 0) return;
+      if (now[1] < MASK) return;
       var p = pos(now[0], now[1], R);
       ctx.fillStyle = col; ctx.beginPath(); ctx.arc(p[0], p[1], 4.5, 0, Math.PI * 2); ctx.fill();
       ctx.fillStyle = muted; ctx.fillText(s.id, p[0] + 8, p[1] - 8);
@@ -936,7 +936,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
   }
   if (window.fetch) fetch('/assets/gnss.json', { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
     if (!d || !d.sats || !d.sats.length || Date.now() - Date.parse(d.updated) > 30 * 86400000) return;
-    live = d.sats.map(function (o) { o.t = Date.parse(o.epoch); o.c = { G: 'a', E: 'b', C: 'c' }[o.id[0]] || 'a'; return o; });
+    live = d.sats.map(function (o) { o.t = Date.parse(o.epoch); o.c = { G: 'a', E: 'b', C: 'c' }[o.c || o.id[0]] || 'a'; return o; });
     compute(); setInterval(compute, 20000);
     var ar = document.documentElement.lang === 'ar';
     document.getElementById('skylive').hidden = false;
