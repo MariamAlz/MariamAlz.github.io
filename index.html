@@ -24,7 +24,7 @@
 <meta property="og:image:alt" content="Mariam Alzaabi, with her headline and a GNSS sky plot over Earth">
 <meta property="og:locale" content="en_US">
 <meta name="twitter:card" content="summary_large_image">
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Person","@id":"https://mariamalzaabi.ae/#mariam","name":"Mariam Alzaabi","alternateName":"مريم الزعابي","url":"https://mariamalzaabi.ae/","image":"https://mariamalzaabi.ae/assets/mariam.jpg","email":"mailto:mariam@mariamalzaabi.ae","jobTitle":"Software Engineer","description":"Emirati software engineer in Abu Dhabi working on algorithms, signal processing, AI and GNSS.","nationality":{"@type":"Country","name":"United Arab Emirates"},"address":{"@type":"PostalAddress","addressLocality":"Abu Dhabi","addressCountry":"AE"},"alumniOf":{"@type":"CollegeOrUniversity","name":"Khalifa University","url":"https://www.ku.ac.ae/"},"knowsAbout":["GNSS","Satellite navigation","Signal processing","Machine learning","Computer vision","Underwater image dehazing","Spiking neural networks","Arabic NLP","Python"],"knowsLanguage":["ar","en"],"sameAs":["https://www.linkedin.com/in/mariam-mk-alzaabi/","https://github.com/MariamAlz","https://medium.com/@mariam-alzaabi"]},{"@type":"WebSite","@id":"https://mariamalzaabi.ae/#site","url":"https://mariamalzaabi.ae/","name":"Mariam Alzaabi","alternateName":"مريم الزعابي","inLanguage":["en","ar"],"publisher":{"@id":"https://mariamalzaabi.ae/#mariam"}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Person","@id":"https://mariamalzaabi.ae/#mariam","name":"Mariam Alzaabi","alternateName":"مريم الزعابي","url":"https://mariamalzaabi.ae/","image":"https://mariamalzaabi.ae/assets/mariam.jpg","email":"mailto:mariam@mariamalzaabi.ae","jobTitle":"Software Engineer","description":"Emirati software engineer in Abu Dhabi working on algorithms, signal processing, AI and GNSS.","nationality":{"@type":"Country","name":"United Arab Emirates"},"address":{"@type":"PostalAddress","addressLocality":"Abu Dhabi","addressCountry":"AE"},"alumniOf":{"@type":"CollegeOrUniversity","name":"Khalifa University","url":"https://www.ku.ac.ae/"},"knowsAbout":["GNSS","Satellite navigation","Signal processing","Machine learning","Computer vision","Underwater image dehazing","Spiking neural networks","Arabic NLP","Python"],"knowsLanguage":["ar","en"],"sameAs":["https://www.linkedin.com/in/mariam-mk-alzaabi/","https://github.com/MariamAlz","https://mariam-alzaabi.medium.com/"]},{"@type":"WebSite","@id":"https://mariamalzaabi.ae/#site","url":"https://mariamalzaabi.ae/","name":"Mariam Alzaabi","alternateName":"مريم الزعابي","inLanguage":["en","ar"],"publisher":{"@id":"https://mariamalzaabi.ae/#mariam"}}]}</script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "1184712606724391ae950364443c232a"}'></script><!-- End Cloudflare Web Analytics -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -261,6 +261,10 @@ section.block { padding-block: 72px; border-top: 1px solid var(--line); }
 .card.featured { grid-column: span 2; background: var(--accent-soft); }
 @media (max-width: 700px) { .card.featured { grid-column: auto; } }
 .card[hidden] { display: none !important; }
+.posts { margin-bottom: 22px; }
+.posts .card { grid-template-rows: auto auto 1fr auto; }
+.posts .card p { display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+#writing .more { display: inline-block; }
 
 /* thesis */
 .thesis { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 40px; align-items: start; }
@@ -734,6 +738,18 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
     </div>
   </section>
 
+  <section class="block" id="writing" hidden>
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="label">Writing</span>
+        <h2>Notes from the log.</h2>
+        <p>My latest posts on Medium.</p>
+      </div>
+      <div class="grid posts" id="posts"></div>
+      <a class="btn ghost more" href="https://mariam-alzaabi.medium.com/" target="_blank" rel="noopener">All posts on Medium ↗</a>
+    </div>
+  </section>
+
   <section class="block" id="offclock">
     <div class="wrap">
       <div class="sec-head">
@@ -807,7 +823,7 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
         <div class="links">
           <a href="https://www.linkedin.com/in/mariam-mk-alzaabi/" target="_blank" rel="noopener">LinkedIn ↗</a>
           <a href="https://github.com/MariamAlz" target="_blank" rel="noopener">GitHub ↗</a>
-          <a href="https://medium.com/@mariam-alzaabi" target="_blank" rel="noopener">Medium ↗</a>
+          <a href="https://mariam-alzaabi.medium.com/" target="_blank" rel="noopener">Medium ↗</a>
         </div>
       </div>
     </div>
@@ -1242,7 +1258,28 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
     draw(0);
   })();
 
-  // Mission log: live song and film, written to assets/mission-log.json by a scheduled GitHub Action
+  // Writing: latest Medium posts, saved daily to assets/medium.json by a GitHub Action
+(function () {
+  var box = document.getElementById('posts'), sec = document.getElementById('writing');
+  if (!box || !window.fetch) return;
+  var ar = document.documentElement.lang === 'ar', cols = ['--sat-a', '--sat-b', '--sat-c'];
+  fetch('/assets/medium.json', { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+    var posts = d && d.posts ? d.posts.filter(function (p) { return p.title && /^https:\/\/([a-z0-9-]+\.)?medium\.com\//.test(p.url); }).slice(0, 3) : [];
+    if (!posts.length) return;
+    posts.forEach(function (p, i) {
+      var a = document.createElement('a'), el = function (tag, cls, txt) { var e = document.createElement(tag); if (cls) e.className = cls; if (txt) e.textContent = txt; return e; };
+      a.className = 'card'; a.href = p.url; a.target = '_blank'; a.rel = 'noopener'; a.style.setProperty('--c', 'var(' + cols[i % 3] + ')');
+      var dt = new Date(p.date), when = isNaN(dt) ? '' : dt.toLocaleDateString(ar ? 'ar-AE-u-nu-latn' : 'en-GB', { month: 'short', year: 'numeric' });
+      var top = el('div', 'top'); top.appendChild(el('span', 'prn', (ar ? 'مقال' : 'POST') + (when ? ' · ' + when : ''))); top.appendChild(el('span', 'arrow', '↗'));
+      var h = el('h3', '', p.title), x = el('p', '', p.excerpt || ''); h.dir = x.dir = 'auto';
+      var tags = el('div', 'tags'); (p.tags || []).forEach(function (t) { tags.appendChild(el('span', '', t.replace(/-/g, ' '))); });
+      a.appendChild(top); a.appendChild(h); a.appendChild(x); a.appendChild(tags); box.appendChild(a);
+    });
+    sec.hidden = false;
+  }).catch(function () {});
+})();
+
+// Mission log: live song and film, written to assets/mission-log.json by a scheduled GitHub Action
 (function () {
   var ar = document.documentElement.lang === 'ar';
   var $ = function (id) { return document.getElementById(id); };

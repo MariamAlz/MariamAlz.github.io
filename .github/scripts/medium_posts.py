@@ -5,7 +5,7 @@ import re
 import urllib.request
 import xml.etree.ElementTree as ET
 
-FEED = "https://medium.com/feed/@mariam-alzaabi"
+FEED = "https://mariam-alzaabi.medium.com/feed"
 NS = {"content": "http://purl.org/rss/1.0/modules/content/", "dc": "http://purl.org/dc/elements/1.1/"}
 
 
