@@ -331,6 +331,8 @@ html[dir="rtl"] .fact { border-left: 0; border-right: 2px solid var(--sat-a); pa
 @keyframes mlogWave { from { height: 18%; } to { height: 100%; } }
 .mlog-stars { color: var(--accent); letter-spacing: 0.2em; font-size: 0.95rem; }
 .mlog-stars span { color: var(--line); }
+.mlog-stars .h { letter-spacing: 0; margin-inline-end: 0.2em; background: linear-gradient(90deg, var(--accent) 50%, var(--line) 50%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+[dir="rtl"] .mlog-stars .h { background-image: linear-gradient(270deg, var(--accent) 50%, var(--line) 50%); }
 .mlog-quote { font-family: var(--font-display); font-size: 1.15rem; line-height: 1.35; min-height: 5.6em; }
 .mlog-quote::after { content: "▍"; color: var(--accent); margin-inline-start: 2px; animation: mlogBlink 1s steps(2, start) infinite; }
 @media (prefers-reduced-motion: reduce) { .mlog-wave span, .mlog-rec::before, .mlog-quote::after { animation: none; } }
@@ -734,15 +736,15 @@ html[dir="rtl"] .readout, html[dir="rtl"] .email { direction: ltr; }
         <div class="mlog-bar"><span class="mlog-rec">سجل المهمة</span><span>إدخال <b id="mlogDate">2026.10</b></span></div>
         <div class="mlog-grid">
           <div class="mlog-entry">
-            <span class="mlog-tag"><i>&#9679;</i> يُعزف الآن</span>
+            <span class="mlog-tag" id="mlogSongTag"><i>&#9679;</i> يُعزف الآن</span>
             <div class="mlog-wave" aria-hidden="true"><span style="animation-delay:-0.00s"></span><span style="animation-delay:-0.13s"></span><span style="animation-delay:-0.26s"></span><span style="animation-delay:-0.39s"></span><span style="animation-delay:-0.52s"></span><span style="animation-delay:-0.65s"></span><span style="animation-delay:-0.78s"></span><span style="animation-delay:-0.91s"></span><span style="animation-delay:-1.04s"></span><span style="animation-delay:-1.17s"></span><span style="animation-delay:-1.30s"></span><span style="animation-delay:-1.43s"></span><span style="animation-delay:-1.56s"></span><span style="animation-delay:-1.69s"></span><span style="animation-delay:-1.82s"></span><span style="animation-delay:-1.95s"></span><span style="animation-delay:-2.08s"></span><span style="animation-delay:-2.21s"></span></div>
-            <h3>Andromeda</h3>
-            <p>Weyes Blood</p>
+            <h3 id="mlogSong">Andromeda</h3>
+            <p id="mlogArtist">Weyes Blood</p>
           </div>
           <div class="mlog-entry">
             <span class="mlog-tag"><i>&#9679;</i> آخر فيلم شاهدته</span>
-            <div class="mlog-stars" aria-label="٤ من ٥">&#9733;&#9733;&#9733;&#9733;<span>&#9733;</span></div>
-            <h3>The Social Reckoning</h3>
+            <div class="mlog-stars" id="mlogStars" aria-label="٤ من ٥">&#9733;&#9733;&#9733;&#9733;<span>&#9733;</span></div>
+            <h3 id="mlogFilm">The Social Reckoning</h3>
           </div>
           <div class="mlog-entry">
             <span class="mlog-tag"><i>&#9679;</i> اقتباس</span>
@@ -1036,7 +1038,33 @@ html[dir="rtl"] .readout, html[dir="rtl"] .email { direction: ltr; }
     draw(0);
   })();
 
-  // Mission log: type out the current thought when it scrolls into view
+  // Mission log: live song and film, written to assets/mission-log.json by a scheduled GitHub Action
+(function () {
+  var ar = document.documentElement.lang === 'ar';
+  var $ = function (id) { return document.getElementById(id); };
+  if (!$('mlogSong') || !window.fetch) return;
+  fetch('/assets/mission-log.json?t=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+    if (!d) return;
+    var m = d.music, f = d.film;
+    if (m && m.title) {
+      $('mlogSong').textContent = m.title;
+      $('mlogArtist').textContent = m.artist || '';
+      if (!m.nowplaying) $('mlogSongTag').innerHTML = '<i>&#9679;</i> ' + (ar ? 'آخر ما استمعت إليه' : 'Last played');
+    }
+    if (f && f.title) {
+      $('mlogFilm').textContent = f.title;
+      var r = Math.max(0, Math.min(5, Math.round((+f.rating || 0) * 2) / 2));
+      if (r) {
+        var full = Math.floor(r), half = r % 1 ? 1 : 0, st = $('mlogStars');
+        st.innerHTML = '&#9733;'.repeat(full) + (half ? '<span class="h">&#9733;</span>' : '') + '<span>' + '&#9733;'.repeat(5 - full - half) + '</span>';
+        st.setAttribute('aria-label', ar ? r + ' من ٥' : r + ' out of 5');
+        st.hidden = false;
+      } else $('mlogStars').hidden = true;
+    }
+  }).catch(function () {});
+})();
+
+// Mission log: type out the current thought when it scrolls into view
 (function () {
   var q = document.getElementById('mlogQuote');
   var d = document.getElementById('mlogDate');

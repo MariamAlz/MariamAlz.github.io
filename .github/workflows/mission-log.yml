@@ -1,0 +1,30 @@
+name: Mission log
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency: mission-log
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    if: vars.LASTFM_USER != '' || vars.LETTERBOXD_USER != ''
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/mission_log.py
+        env:
+          LASTFM_USER: ${{ vars.LASTFM_USER }}
+          LASTFM_KEY: ${{ secrets.LASTFM_KEY }}
+          LETTERBOXD_USER: ${{ vars.LETTERBOXD_USER }}
+      - name: Commit if changed
+        run: |
+          git diff --quiet assets/mission-log.json && exit 0
+          git config user.name "mission-log bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Update mission log" assets/mission-log.json
+          git push

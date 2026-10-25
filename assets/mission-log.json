@@ -1,0 +1,11 @@
+{
+  "music": {
+    "title": "Andromeda",
+    "artist": "Weyes Blood",
+    "nowplaying": true
+  },
+  "film": {
+    "title": "The Social Reckoning",
+    "rating": 4
+  }
+}
