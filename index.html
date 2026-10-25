@@ -1,10 +1,12 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Mariam Alzaabi</title>
 <meta name="claude:viewport-fit-sides" content="cover">
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <meta name="description" content="Mariam Alzaabi, Emirati software engineer in Abu Dhabi working on algorithms, signal processing, AI and GNSS.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -80,6 +82,16 @@ header.nav {
 .nav nav a { text-decoration: none; color: var(--muted); font-weight: 500; font-size: 0.95rem; }
 .nav nav a:hover { color: var(--ink); }
 @media (max-width: 640px) { .nav nav a:not(.keep) { display: none; } }
+
+.nav nav a.lang { color: var(--accent); border: 1px solid color-mix(in srgb, var(--accent) 50%, transparent); padding: 2px 12px; border-radius: 999px; }
+.nav nav a.lang:hover { background: var(--accent); color: #1a1205; }
+
+/* rocket cursor */
+@media (pointer: fine) {
+  html, body { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cg transform='rotate(-45 16 16)'%3E%3Cpath d='M13 22 L16 30 L19 22 Z' fill='%23FF9F43'/%3E%3Cpath d='M11 15 L6 23 L11 21 Z M21 15 L26 23 L21 21 Z' fill='%23E9B467'/%3E%3Cpath d='M16 1 C21 6 22 13 21 21 L11 21 C10 13 11 6 16 1 Z' fill='%23EEF0FA' stroke='%23070A18' stroke-width='1.2'/%3E%3Ccircle cx='16' cy='10' r='2.6' fill='%2384A0FF' stroke='%23070A18' stroke-width='.8'/%3E%3C/g%3E%3C/svg%3E") 5 5, auto; }
+  a, button, .chip, label, input[type="range"], .card { cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cg transform='rotate(-45 16 16)'%3E%3Cpath d='M12 21 L16 31.5 L20 21 Z' fill='%23F08AB3'/%3E%3Cpath d='M13.5 21 L16 27 L18.5 21 Z' fill='%23FFD166'/%3E%3Cpath d='M11 15 L6 23 L11 21 Z M21 15 L26 23 L21 21 Z' fill='%23E9B467'/%3E%3Cpath d='M16 1 C21 6 22 13 21 21 L11 21 C10 13 11 6 16 1 Z' fill='%23E9B467' stroke='%23070A18' stroke-width='1.2'/%3E%3Ccircle cx='16' cy='10' r='2.6' fill='%2384A0FF' stroke='%23070A18' stroke-width='.8'/%3E%3C/g%3E%3C/svg%3E") 5 5, pointer; }
+}
+#trail { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 60; pointer-events: none; }
 
 /* hero */
 .hero .wrap {
@@ -301,19 +313,21 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
 <body>
 <header class="nav">
   <div class="wrap">
-    <a class="mark" href="#top"><b>Mariam Alzaabi</b><span>مريم</span></a>
+    <a class="mark" href="#top"><b>Mariam Alzaabi</b><span lang="ar" dir="rtl">مريم الزعابي</span></a>
     <nav aria-label="Sections">
       <a href="#about">About</a>
       <a href="#thesis">Thesis</a>
       <a href="#projects">Projects</a>
       <a href="#journey">Journey</a>
       <a class="keep" href="#contact">Contact</a>
+      <a class="keep lang" href="ar/" lang="ar" hreflang="ar">عربي</a>
     </nav>
   </div>
 </header>
 
 <canvas id="earth" aria-hidden="true"></canvas>
 <canvas id="fx" aria-hidden="true"></canvas>
+<canvas id="trail" aria-hidden="true"></canvas>
 <div class="hud mono" id="hud" aria-hidden="true">
   <span>ALT <b id="alt">20,200 km</b></span>
   <span class="ph" id="phase">MEO · GNSS orbit</span>
@@ -323,7 +337,6 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
   <section class="hero">
     <div class="wrap">
       <div class="hero-copy">
-        <div class="ar-name" lang="ar" dir="rtl">مريم الزعابي</div>
         <h1>Engineering things that know <em>where</em> they are.</h1>
         <p class="lede">I'm Mariam, an <strong>Emirati software engineer</strong> in Abu Dhabi. I build algorithms in signal processing, AI and <strong>GNSS</strong>, and I like turning hard problems into clean, working code.</p>
         <span class="status"><i></i>Open to freelance projects</span>
@@ -772,6 +785,32 @@ footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; g
       hx.fillStyle = '#1a1205'; hx.font = '600 12px sans-serif'; hx.textAlign = 'center'; hx.textBaseline = 'middle'; hx.fillText('⇆', cut, h / 2 + 1);
     }
     sl.addEventListener('input', paint); paint();
+  })();
+
+  // Rocket exhaust trail behind the cursor
+  (function () {
+    if (reduce || !matchMedia('(pointer: fine)').matches) return;
+    var tc = document.getElementById('trail'), tx = tc.getContext('2d'), parts = [], running = false, d = 1;
+    function fit() { d = Math.min(devicePixelRatio || 1, 2); tc.width = innerWidth * d; tc.height = innerHeight * d; tx.setTransform(d, 0, 0, d, 0, 0); }
+    fit(); addEventListener('resize', fit);
+    var cols = ['#FF9F43', '#FFD166', '#F08AB3', '#E9B467'];
+    addEventListener('pointermove', function (e) {
+      // the cursor image's tail sits about 21px down-right of the hotspot
+      for (var i = 0; i < 2; i++) parts.push({ x: e.clientX + 19 + Math.random() * 4, y: e.clientY + 19 + Math.random() * 4, vx: 0.6 + Math.random() * 0.9, vy: 0.6 + Math.random() * 0.9, life: 1, r: 1.5 + Math.random() * 2.2, c: cols[(Math.random() * 4) | 0] });
+      if (parts.length > 160) parts.splice(0, parts.length - 160);
+      if (!running) { running = true; requestAnimationFrame(step); }
+    }, { passive: true });
+    function step() {
+      tx.clearRect(0, 0, innerWidth, innerHeight);
+      parts = parts.filter(function (p) { return p.life > 0; });
+      parts.forEach(function (p) {
+        p.x += p.vx; p.y += p.vy; p.life -= 0.035;
+        tx.globalAlpha = Math.max(0, p.life) * 0.85; tx.fillStyle = p.c;
+        tx.beginPath(); tx.arc(p.x, p.y, p.r * (0.4 + p.life * 0.6), 0, 6.28); tx.fill();
+      });
+      tx.globalAlpha = 1;
+      if (parts.length) requestAnimationFrame(step); else running = false;
+    }
   })();
 
   // Descent scene: scroll takes the camera from GNSS orbit down to Abu Dhabi.
