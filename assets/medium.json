@@ -1,0 +1,40 @@
+{
+ "posts": [
+  {
+   "title": "How to Automatically Log Clock In and Out",
+   "url": "https://mariam-alzaabi.medium.com/how-to-automatically-log-clock-in-and-out-62c9012e3c5b",
+   "date": "Thu, 29 Jan 2026 11:44:28 GMT",
+   "tags": [
+    "automation",
+    "work",
+    "ios"
+   ],
+   "excerpt": "All you have to do is walk in or out. A workday routine usually starts the same way: you arrive, get settled, and start working. Getting settled can mean grabbing coffee, logging…",
+   "image": "https://cdn-images-1.medium.com/max/1024/0*25bcJ3Y858_0d8Xf"
+  },
+  {
+   "title": "The Ultimate Guide to Googling",
+   "url": "https://mariam-alzaabi.medium.com/the-ultimate-guide-to-googling-4162cc763cc",
+   "date": "Sat, 29 Apr 2023 16:38:38 GMT",
+   "tags": [
+    "google-search",
+    "information-retrieval",
+    "tips-and-tricks"
+   ],
+   "excerpt": "Find exactly what you’re looking for with this ultimate guide of 15 tips and tricks. Shorten your search queries by eliminating redundant key search terms When using Google, try…",
+   "image": "https://cdn-images-1.medium.com/max/960/0*nieIqfnj0Amni7_h.png"
+  },
+  {
+   "title": "Cogito, Language, and AI: A Philosophical Odyssey from Descartes to ChatGPT",
+   "url": "https://mariam-alzaabi.medium.com/cogito-language-and-ai-a-philosophical-odyssey-from-descartes-to-chatgpt-7b8f887f8291",
+   "date": "Mon, 24 Apr 2023 03:12:52 GMT",
+   "tags": [
+    "ethics",
+    "chatgpt",
+    "artificial-intelligence"
+   ],
+   "excerpt": "Artificial Intelligence (AI) has become a buzzword in recent years, creating an aura of technological advancement that has captivated the imaginations of both technophiles and the…",
+   "image": "https://cdn-images-1.medium.com/max/750/0*yTO66dwE0kjZcZAv"
+  }
+ ]
+}
