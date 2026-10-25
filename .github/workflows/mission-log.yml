@@ -27,4 +27,5 @@ jobs:
           git config user.name "mission-log bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -m "Update mission log" assets/mission-log.json
+          git pull --rebase origin main
           git push
