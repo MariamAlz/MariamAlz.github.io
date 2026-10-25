@@ -78,6 +78,9 @@ header.nav {
 .mark { display: flex; align-items: baseline; gap: 10px; text-decoration: none; }
 .mark b { font-family: var(--font-display); font-weight: 800; font-size: 1.15rem; }
 .mark span { font-family: var(--font-ar); color: var(--accent); font-size: 1.05rem; }
+.mark .nm-ar { font-family: var(--font-ar) !important; letter-spacing: 0; }
+.mark .nm-en { font-family: var(--font-display) !important; }
+.mark span.nm-ar { font-size: 1.1rem !important; }
 .nav nav { display: flex; gap: 22px; flex-wrap: wrap; }
 .nav nav a { text-decoration: none; color: var(--muted); font-weight: 500; font-size: 0.95rem; }
 .nav nav a:hover { color: var(--ink); }
@@ -1105,6 +1108,30 @@ html[dir="rtl"] .readout, html[dir="rtl"] .email { direction: ltr; }
     var i = 0;
     (function step() { q.textContent = full.slice(0, ++i); if (i < full.length) setTimeout(step, 38); })();
   }, { threshold: 0.6 }).observe(q);
+})();
+
+// Name morph: the English and Arabic names decode into each other and swap places
+(function () {
+  var m = document.querySelector('.mark');
+  if (!m || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var a = m.querySelector('b'), b = m.querySelector('span');
+  m.setAttribute('aria-label', a.textContent + ' · ' + b.textContent);
+  a.setAttribute('aria-hidden', 'true'); b.setAttribute('aria-hidden', 'true');
+  function isAr(s) { return /[\u0600-\u06FF]/.test(s); }
+  function tag(el, s) { var ar = isAr(s); el.classList.toggle('nm-ar', ar); el.classList.toggle('nm-en', !ar); el.dir = ar ? 'rtl' : 'ltr'; el.lang = ar ? 'ar' : 'en'; }
+  function morph(el, to, dur) {
+    var from = el.textContent, pool = (from + to).replace(/\s/g, '') + '#%*/<>01', t0 = performance.now();
+    tag(el, to);
+    (function step(now) {
+      var k = Math.min(1, Math.max(0, (now - t0) / dur)), n = Math.round(from.length + (to.length - from.length) * k), fixed = Math.floor(to.length * k * k), s = '';
+      for (var i = 0; i < n; i++) s += i < fixed || to[i] === ' ' ? (to[i] || '') : pool[Math.random() * pool.length | 0];
+      el.textContent = k < 1 ? s : to;
+      if (k < 1) requestAnimationFrame(step);
+    })(t0);
+  }
+  tag(a, a.textContent); tag(b, b.textContent);
+  function swap() { if (document.hidden) return; var x = a.textContent, y = b.textContent; morph(a, y, 1100); morph(b, x, 1100); }
+  setTimeout(function () { swap(); setInterval(swap, 9000); }, 5000);
 })();
 
 // Rocket exhaust trail behind the cursor
