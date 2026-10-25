@@ -24,6 +24,8 @@ def main():
     for prefix, group in GROUPS.items():
         for o in fetch(group):
             m = re.search(PRN[prefix], o["OBJECT_NAME"])
+            if not m:
+                print("No PRN in name:", o["OBJECT_NAME"])
             sats.append({
                 "id": "%s%02d" % (prefix, int(m.group(1))) if m else "%s%d" % (prefix, o["NORAD_CAT_ID"] % 100),
                 "epoch": o["EPOCH"] + "Z",
